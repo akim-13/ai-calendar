@@ -182,4 +182,6 @@ cython_debug/
 # joblib cache
 cache/
 
+# Misc
 *.db
+.DS_Store
