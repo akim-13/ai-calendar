@@ -8,7 +8,7 @@ from backend.database.dbsetup import SessionLocal, engine
 from backend.database.models import ORM_Base
 from backend.misc.logger import configure_logging, get_logger
 from backend.routers import achievements, calendars, events, tasks, users
-from backend.tools.startup import startup
+from backend.services.startup import startup
 
 # TODO:
 # - Docstrings enforcement.

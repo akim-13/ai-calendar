@@ -1,9 +1,9 @@
 from sqlalchemy.orm import Session
 
 from backend.database.models import Achievements, Standalone_Event, User
-from backend.misc.config import default_achievements
+from backend.misc.defaults import default_achievements
 from backend.misc.logger import get_logger
-from backend.tools import external_cal_sync
+from backend.services import external_cal_sync
 
 log = get_logger(__name__)
 
