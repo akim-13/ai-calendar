@@ -10,6 +10,10 @@ from joblib import Memory
 from openai import OpenAI
 from pydantic import BaseModel
 
+from backend.misc.logger import get_logger
+
+log = get_logger(__name__)
+
 load_dotenv()
 
 client = OpenAI()
@@ -210,14 +214,14 @@ if __name__ == "__main__":  # pragma: no cover
     currentDate = datetime.datetime.now()
     task = gen(description, currentDate)
     if isinstance(task, Event):
-        print("TYPE: Event")
-        print("TITLE:", task.title)
-        print("DESCRIPTION:", task.description)
-        print("START:", task.start)
-        print("END:", task.end)
+        log.info("TYPE: Event")
+        log.info("TITLE: %s", task.title)
+        log.info("DESCRIPTION: %s", task.description)
+        log.info("START: %s", task.start)
+        log.info("END: %s", task.end)
     else:
-        print("TYPE: Task")
-        print("TITLE:", task.title)
-        print("DESCRIPTION:", task.description)
-        print("DEADLINE:", task.deadline)
-        print("DURATION:", task.durationMinutes)
+        log.info("TYPE: Task")
+        log.info("TITLE: %s", task.title)
+        log.info("DESCRIPTION: %s", task.description)
+        log.info("DEADLINE: %s", task.deadline)
+        log.info("DURATION: %s", task.durationMinutes)

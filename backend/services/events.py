@@ -3,8 +3,8 @@ from datetime import datetime
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
 
-from backend.config import DATETIME_FORMAT
 from backend.database.models import Event, Standalone_Event, Task, User
+from backend.misc.config import DATETIME_FORMAT
 from backend.tools.jsonify import convertToJson
 
 

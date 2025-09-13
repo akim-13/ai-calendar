@@ -10,13 +10,16 @@ from dotenv import load_dotenv
 from openai import OpenAI
 from sqlalchemy.orm import Session
 
-from backend.config import API_KEY, DATETIME_FORMAT
 from backend.database.models import Event, Task
+from backend.misc.config import API_KEY, DATETIME_FORMAT
+from backend.misc.logger import get_logger
 from backend.services.events import delete_events_from_task, get_events, get_standalone_events
 from backend.tools.jsonify import convertToJson
 
+log = get_logger(__name__)
+
 load_dotenv()
-print(f"API_KEY:{API_KEY}")
+log.info(f"API_KEY:{API_KEY}")
 
 client = OpenAI()
 
@@ -67,23 +70,23 @@ def breakdown_task_LLM(user_prompt: str) -> dict:
         )
 
         if (not completion) or (not completion.choices):
-            print("Error: API response is empty.")
+            log.error("API response is empty.")
             return {}
 
-        print(completion)
+        log.debug("Raw completion: %s", completion)
         response = completion.choices[0].message.content
 
         if response is None:
-            print("Error: API response message content is None.")
+            log.error("API response message content is None.")
             return {}
 
-        print(response)
+        log.debug("Raw response content: %s", response)
         response = json.loads(response)
 
         return response
 
     except Exception as e:
-        print("API Error:", str(e))
+        log.exception("API Error: %s", str(e))
         return {}
 
 
@@ -94,7 +97,7 @@ def break_down_add_events(username: str, taskID: int, db: Session) -> dict:
     if task.events != []:
         delete_events_from_task(taskID, db)  # Delete all the events that are prexisting
 
-    print("Doing some shit")
+    log.info("Deleting existing events and generating new ones")
 
     standalone_events = get_standalone_events(username, (datetime.now(), task.deadline), db)[
         "standalone_events"
@@ -107,7 +110,7 @@ def break_down_add_events(username: str, taskID: int, db: Session) -> dict:
     out = breakdown_task_LLM(get_user_prompt(task, calendar))
     new_events_json = out["events"]
 
-    print("EVENTS: ", new_events_json, type(new_events_json))
+    log.info("New events generated: %s (%s)", new_events_json, type(new_events_json))
 
     new_events = [
         Event(

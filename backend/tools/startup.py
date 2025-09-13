@@ -1,8 +1,11 @@
 from sqlalchemy.orm import Session
 
-from backend.config import default_achievements
 from backend.database.models import Achievements, Standalone_Event, User
+from backend.misc.config import default_achievements
+from backend.misc.logger import get_logger
 from backend.tools import external_cal_sync
+
+log = get_logger(__name__)
 
 
 def startup(db: Session) -> None:
@@ -10,6 +13,7 @@ def startup(db: Session) -> None:
     Run initialisation steps for the application:
     sync calendars, init achievements, seed user.
     """
+    log.info("Running startup tasks...")
     update_all_external_cals(db)
     initialise_achievements(db)
     seed_joe_user(db)

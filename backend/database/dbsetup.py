@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-from backend.config import DATABASE_URL
+from backend.misc.config import DATABASE_URL
 
 # Second arg is for sqlite specifically - FastAPI uses multithreading on default
 # This ensures other threads can access the connection
