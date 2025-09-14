@@ -20,8 +20,15 @@ jobs:
           restore-keys: |
             pre-commit-
 
-      - name: Build pre-commit image
-        run: docker build -t pre-commit-check -f .dev-setup/Dockerfile .
+      - name: Build and cache pre-commit image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: .dev-setup/Dockerfile
+          tags: pre-commit-check
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Run pre-commit checks
         run: |
