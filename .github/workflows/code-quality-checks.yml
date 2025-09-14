@@ -31,3 +31,6 @@ jobs:
                 -w /app \
                 pre-commit-check \
                 pre-commit run --all-files --show-diff-on-failure --color always
+
+      - name: Fix pre-commit cache permissions
+        run: sudo chown -R $USER:$USER ~/.cache/pre-commit
