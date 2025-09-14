@@ -20,6 +20,11 @@ jobs:
           restore-keys: |
             pre-commit-
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker-container
+
       - name: Build and cache pre-commit image
         uses: docker/build-push-action@v6
         with:
