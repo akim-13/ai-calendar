@@ -63,3 +63,20 @@ Either `Ctrl+C` or:
 ```bash
 docker compose down
 ```
+
+## Misc
+### Updating Frontend API
+
+Our frontend uses **OpenAPI-generated TypeScript types** to stay in sync with backend models. These types are derived from the backend's `http://backend:8000/openapi.json` spec.
+
+When backend endpoints or models change:
+
+1. Ensure that the backend is running:
+```bash
+docker compose up
+```
+
+2. Regenerate the frontend types inside Docker to update `frontend/src/types/api.ts`:
+```bash
+docker compose run --rm frontend npm run gen-types
+```
