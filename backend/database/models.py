@@ -1,103 +1,111 @@
-from datetime import datetime
+# Store type hints as strings so forward references
+# (e.g. User ↔ UserSettings) don't cause NameError.
+from __future__ import annotations
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String
+from datetime import datetime
+from typing import Optional
+
+from sqlalchemy import Boolean, DateTime, ForeignKey, String, func
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.database.dbsetup import ORM_Base
+from backend.database.dbsetup import ORMBase, TimestampMixin
 
 
-class User(ORM_Base):
-    __tablename__ = "User"
+class User(ORMBase, TimestampMixin):
+    __tablename__ = "user"
 
-    username: Mapped[str] = mapped_column(String, primary_key=True, index=True, nullable=False)
-    hashedPassword: Mapped[str] = mapped_column(String, nullable=False)
-    streakDays: Mapped[int] = mapped_column(Integer, nullable=False)
-    currentPoints: Mapped[int] = mapped_column(Integer, nullable=False)
-    stressLevel: Mapped[int] = mapped_column(Integer, nullable=False)
-
-    tasks: Mapped[list["Task"]] = relationship("Task", back_populates="user", cascade="all, delete")
-    standalone_events: Mapped[list["Standalone_Event"]] = relationship(
-        "Standalone_Event", back_populates="user", cascade="all, delete"
-    )
-    achievements: Mapped[list["Achievements_to_User"]] = relationship(
-        "Achievements_to_User", back_populates="user", cascade="all, delete"
-    )
-
-    @property
-    def events(self) -> list["Event"]:
-        """Return all events across all tasks for this user."""
-        return [event for task in self.tasks for event in task.events]
-
-
-class Task(ORM_Base):
-    __tablename__ = "Task"
-
-    taskID: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, nullable=False)
-    title: Mapped[str] = mapped_column(String, nullable=False)
-    description: Mapped[str] = mapped_column(String, nullable=False)
-    deadline: Mapped[datetime] = mapped_column(DateTime, nullable=False)
-    isCompleted: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    priority: Mapped[int] = mapped_column(Integer, nullable=False)
-    duration: Mapped[int] = mapped_column(Integer, nullable=False)
-
-    username: Mapped[str] = mapped_column(ForeignKey("User.username"), nullable=False)
-
-    user: Mapped["User"] = relationship("User", back_populates="tasks")
-    events: Mapped[list["Event"]] = relationship(
-        "Event", back_populates="task", cascade="all, delete"
-    )
-
-
-class Event(ORM_Base):
-    __tablename__ = "Event"
-
-    eventID: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, nullable=False)
-    taskID: Mapped[int] = mapped_column(ForeignKey("Task.taskID"), nullable=False)
-    start: Mapped[datetime] = mapped_column(DateTime, nullable=False)
-    end: Mapped[datetime] = mapped_column(DateTime, nullable=False)
-
-    task: Mapped["Task"] = relationship("Task", back_populates="events")
-
-    @property
-    def user(self) -> "User":
-        """Access the user through the related task."""
-        return self.task.user
-
-
-class Standalone_Event(ORM_Base):
-    __tablename__ = "Standalone_Event"
-
-    standaloneEventID: Mapped[int] = mapped_column(Integer, primary_key=True, nullable=False)
-    start: Mapped[datetime] = mapped_column(DateTime, nullable=False)
-    end: Mapped[datetime] = mapped_column(DateTime, nullable=False)
-    standaloneEventName: Mapped[str] = mapped_column(String, nullable=False)
-    standaloneEventDescription: Mapped[str | None] = mapped_column(String, nullable=True)
-    eventBy: Mapped[str | None] = mapped_column(String, nullable=True)
-    username: Mapped[str] = mapped_column(ForeignKey("User.username"), nullable=False)
-
-    user: Mapped["User"] = relationship("User", back_populates="standalone_events")
-
-
-class Achievements(ORM_Base):
-    __tablename__ = "Achievements"
-
-    achievementID: Mapped[int] = mapped_column(
-        Integer, primary_key=True, index=True, nullable=False
-    )
-    requiredPoints: Mapped[int] = mapped_column(Integer, nullable=False)
-    title: Mapped[str] = mapped_column(String, nullable=False)
-    description: Mapped[str] = mapped_column(String, nullable=False)
-    image_path: Mapped[str | None] = mapped_column(String, nullable=True)
-
-
-class Achievements_to_User(ORM_Base):
-    __tablename__ = "Achievements_to_User"
-
+    # Columns.
     username: Mapped[str] = mapped_column(
-        ForeignKey("User.username"), primary_key=True, nullable=False
-    )
-    achievementID: Mapped[int] = mapped_column(
-        ForeignKey("Achievements.achievementID"), primary_key=True, nullable=False
+        String(),
+        primary_key=True,
     )
 
-    user: Mapped["User"] = relationship("User", back_populates="achievements")
+    last_login: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+    is_active: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        server_default="true",
+    )
+
+    # Relationships.
+    settings: Mapped[Optional[UserSettings]] = relationship(
+        # This reads as "If User.settings is assigned, assign
+        # UserSettings.user to this User, and vice versa".
+        "UserSettings",
+        back_populates="user",
+        # Don't return a list for one-to-one relationships.
+        uselist=False,
+        # Make SQLAlchemy delete UserSettings row if user.settings
+        # is set to None or if parent User row is deleted.
+        cascade="all, delete-orphan",
+    )
+    model_parameters: Mapped[Optional[UserModelParameters]] = relationship(
+        "UserModelParameters",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan",
+    )
+
+
+class UserSettings(ORMBase):
+    __tablename__ = "user_settings"
+
+    # Columns.
+    username: Mapped[str] = mapped_column(
+        String(),
+        # Make the DB delete UserSettings row if parent User row is deleted.
+        ForeignKey("user.username", ondelete="CASCADE"),
+        # Setting the FK as PK always makes the relationship one-to-one.
+        primary_key=True,
+    )
+
+    timezone: Mapped[str] = mapped_column(
+        String(),
+        nullable=False,
+        server_default="Europe/London",
+    )
+    theme: Mapped[str] = mapped_column(
+        String(),
+        nullable=False,
+        server_default="dark",
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=func.now(),
+    )
+
+    # Relationships.
+    user: Mapped[User] = relationship(
+        "User",
+        # This reads as "If UserSettings.user is assigned, assign
+        # User.settings to this UserSettings, and vice versa".
+        back_populates="settings",
+    )
+
+
+class UserModelParameters(ORMBase, TimestampMixin):
+    __tablename__ = "user_model_parameters"
+
+    # Columns.
+    username: Mapped[str] = mapped_column(
+        String(),
+        ForeignKey("user.username", ondelete="CASCADE"),
+        primary_key=True,
+    )
+
+    parameters: Mapped[dict] = mapped_column(
+        # PostgreSQL-specific.
+        JSONB,
+        nullable=False,
+    )
+
+    # Relationships.
+    user: Mapped[User] = relationship(
+        back_populates="model_parameters",
+    )
