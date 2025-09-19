@@ -4,7 +4,7 @@
 user
 -
 username PK string
-last_login datetime
+last_login datetime NULL
 is_active bool  # For disabling w/o deleting.
 created_at datetime
 updated_at datetime
@@ -16,6 +16,7 @@ user_settings
 username string PK FK - user.username
 timezone string
 theme string
+created_at datetime  # Redundant but easier to implement with TimestampMixin
 updated_at datetime
 
 
@@ -23,7 +24,7 @@ updated_at datetime
 external_calendar
 -
 id PK int
-username string FK >0- user.username NULL
+username string FK >0- user.username
 provider string        # 'mytimetable', 'google', 'outlook'
 created_at datetime
 updated_at datetime
@@ -33,7 +34,7 @@ updated_at datetime
 # SMPs would be stored in a config file.
 user_model_parameters
 -
-username string PK FK >- user.username
+username string PK FK - user.username
 parameters jsonb
 created_at datetime
 updated_at datetime
@@ -44,17 +45,17 @@ plannable
 id int PK
 username string FK >0- user.username
 external_calendar_id int FK >0- external_calendar.id NULL
+type string  # Discriminator column: "task" or "event"
 title string
 description string
-is_completed bool NULL # Not NULL if related to a task
+is_completed bool
 created_at datetime
 updated_at datetime
 
 
 task
 -
-id int PK FK >0- plannable.id
-event_id int FK >0- event.id NULL
+id int PK FK - plannable.id
 deadline datetime
 duration interval
 priority int
@@ -62,7 +63,7 @@ priority int
 
 event
 -
-id int PK FK >0- plannable.id
+id int PK FK - plannable.id
 task_id int FK >0- task.id NULL
 start datetime
 end datetime
