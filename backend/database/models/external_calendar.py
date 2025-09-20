@@ -1,6 +1,4 @@
-from datetime import datetime
-
-from sqlalchemy import DateTime, ForeignKey, Integer, String
+from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.database import Plannable, User
@@ -29,7 +27,7 @@ class ExternalCalendar(ORMBase, TimestampMixin):
     )
 
     # Relationships.
-    # Many-to-one.
+    # 0..N : 1
     user: Mapped[User] = relationship(
         "User",
         back_populates="external_calendars",

@@ -1,5 +1,3 @@
-# Store type hints as strings so forward references
-# (e.g. User ↔ UserSettings) don't cause NameError.
 from __future__ import annotations
 
 from datetime import datetime, timedelta
@@ -10,33 +8,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from backend.database import ExternalCalendar, User
 from backend.database.constants import EVENT_POLYMORPHIC_IDENTITY, TASK_POLYMORPHIC_IDENTITY
 from backend.database.models.base import ORMBase, TimestampMixin
-
-# [WIP: This may or may not be correct.]
-#
-# To determine the cardinality of the relationship of tables P and C:
-#
-# 1. Find the Child table (C). The Child table always contains the FK to the Parent table (P).
-# 2. The entire relationship is explained by the FK, unless there are some weird extra constraints elsewhere.
-# 3. From C's perspective, the only possible relationships enforced by the FK are:
-#
-#    ----------------------------------------------------
-#    |                | FK=PK or UNIQUE|FK is NOT UNIQUE|
-#    |----------------+----------------+----------------|
-#    | FK NOT NULL    | One-TO-one     | Many-TO-one    |
-#    |                | (1 → 1)        | (0..N → 1)     |
-#    |----------------+----------------+----------------|
-#    | FK NULLABLE    |One-TO-zero/one |Many-TO-zero/one|
-#    |                |(1 → 0/1)       |(0..N → 1/0)    |
-#    -----------------+----------------+-----------------
-#
-# 4. From P's perspective, the relationship is reversed.
-
-#
-#    a. One-to-one if the FK is NOT NULL and also PRIMARY KEY or UNIQUE.
-#    b. One-to-0/1 if the FK is NULLABLE and also PRIMARY KEY or UNIQUE.
-#    c. Many-to-one (0..N-to-1) if the FK is NOT NULL without uniqueness.
-#    d. Many-to-Zero/one (0..N-to-0/1) if the FK is NULLABLE without uniqueness.
-#
 
 
 class Plannable(ORMBase, TimestampMixin):
@@ -86,16 +57,16 @@ class Plannable(ORMBase, TimestampMixin):
     )
     is_completed: Mapped[bool] = mapped_column(
         Boolean,
-        nullable=False,
+        nullable=True,  # True for standalone Events.
     )
 
     # Relationships.
-    # Many-to-one.
+    # 0..N : 1
     user: Mapped[User] = relationship(
         User,
         back_populates="plannables",
     )
-    # Many-to-one.
+    # 0..N : 0/1
     external_calendar: Mapped[ExternalCalendar] = relationship(
         "ExternalCalendar",
         back_populates="plannables",
@@ -130,12 +101,13 @@ class Task(Plannable):
     )
 
     # Relationships.
-    # 0/1-to-many: 0 or 1 tasks can have 0..N events.
+    # 0/1 : 0..N
     events: Mapped[list["Event"]] = relationship(
         "Event",
         back_populates="task",
         cascade="all, delete-orphan",
     )
+    # NOTE: No relationship to Plannable because it's inherited from it.
 
 
 class Event(Plannable):
@@ -154,13 +126,14 @@ class Event(Plannable):
         nullable=True,
     )
 
-    # Data fields. The
+    # Data fields.
     start: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     end: Mapped[datetime] = mapped_column(DateTime, nullable=False)
 
     # Relationships.
-    # Many-to-0/1: 0..N events can belong to 0 or 1 tasks.
+    # 0..N : 0/1
     task: Mapped[Task] = relationship(
         "Task",
         back_populates="events",
     )
+    # NOTE: No relationship to Plannable because it's inherited from it.

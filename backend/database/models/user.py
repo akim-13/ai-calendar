@@ -8,7 +8,9 @@ from sqlalchemy import Boolean, DateTime, ForeignKey, String
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from backend.database import ExternalCalendar, Plannable
 from backend.database.models.base import ORMBase, TimestampMixin
+from backend.misc.defaults import DefaultUserSettings
 
 
 class User(ORMBase, TimestampMixin):
@@ -28,27 +30,40 @@ class User(ORMBase, TimestampMixin):
     is_active: Mapped[bool] = mapped_column(
         Boolean,
         nullable=False,
-        server_default="true",
+        default="true",
     )
 
     # Relationships.
-    # One-to-one.
+
+    # NOTE: User will only have UserSettings if they change the default confguration.
+    # Otherwise, just read the defaults specified in UserSettingsDefaults class.
+    # The same logic applies to UserModelParameters.
+    # 1 : 0/1
     settings: Mapped[UserSettings | None] = relationship(
         "UserSettings",
         # This reads as "If User.settings is assigned, assign
         # UserSettings.user to this User, and vice versa".
         back_populates="user",
-        # Don't return a list for one-to-one relationships.
-        uselist=False,
         # Make SQLAlchemy delete UserSettings row if user.settings
         # is set to None or if parent User row is deleted.
         cascade="all, delete-orphan",
     )
-    # One-to-one.
+    # 1 : 0/1
     model_parameters: Mapped[UserModelParameters | None] = relationship(
         "UserModelParameters",
         back_populates="user",
-        uselist=False,
+        cascade="all, delete-orphan",
+    )
+    # 1 : 0..N
+    plannables: Mapped[list[Plannable]] = relationship(
+        "Plannable",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    # 1 : 0..N
+    external_calendars: Mapped[list[ExternalCalendar]] = relationship(
+        "ExternalCalendar",
+        back_populates="user",
         cascade="all, delete-orphan",
     )
 
@@ -59,9 +74,8 @@ class UserSettings(ORMBase, TimestampMixin):
     # Keys.
     username: Mapped[str] = mapped_column(
         String(),
-        # Make the DB delete UserSettings row if parent User row is deleted.
+        # `ondelete` makes the DB delete UserSettings row if parent User row is deleted.
         ForeignKey("user.username", ondelete="CASCADE"),
-        # Setting the FK as PK always makes the relationship one-to-one.
         primary_key=True,
     )
 
@@ -69,16 +83,16 @@ class UserSettings(ORMBase, TimestampMixin):
     timezone: Mapped[str] = mapped_column(
         String(),
         nullable=False,
-        server_default="Europe/London",
+        default=DefaultUserSettings.timezone,
     )
     theme: Mapped[str] = mapped_column(
         String(),
         nullable=False,
-        server_default="dark",
+        default=DefaultUserSettings.theme,
     )
 
     # Relationships.
-    # One-to-one.
+    # 0/1 : 1
     user: Mapped[User] = relationship(
         "User",
         # This reads as "If UserSettings.user is assigned, assign
@@ -105,7 +119,7 @@ class UserModelParameters(ORMBase, TimestampMixin):
     )
 
     # Relationships.
-    # One-to-one.
+    # 0/1 : 1
     user: Mapped[User] = relationship(
         "User",
         back_populates="model_parameters",
