@@ -5,7 +5,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_URL = "sqlite:///./database.db"
+# PostgreSQL database configuration
+DATABASE_URL = os.getenv(
+    "DATABASE_URL", "postgresql://postgres:password@localhost:5432/ai_calendar"
+)
 API_KEY = os.getenv("OPENAI_API_KEY")
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M"
 
