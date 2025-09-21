@@ -98,7 +98,7 @@ class TaskScheduler:
             
             for day in valid_days:
                 day_start = day * self.ticks_per_day
-                day_end = min(day_start + self.ticks_per_day, self.T)
+                day_end = min(day_start + self.ticks_per_day, self.T) # In case timetable data is smaller than 7 days
                 
                 if relation == "before":
                     # Schedule strictly before the boundary
@@ -143,6 +143,11 @@ class TaskScheduler:
                 day_start = day * self.ticks_per_day
                 day_end = min(day_start + self.ticks_per_day, self.T)
                 valid_ticks.update(range(day_start, day_end))
-            
-        return sorted(list(valid_ticks))
+                
+        print (sorted(list(valid_ticks)))
+        
+if __name__ == "__main__":
+    scheduler = TaskScheduler("timetable.json", "llm.json")
+    scheduler.get_day_period_constraints()
     
+        
