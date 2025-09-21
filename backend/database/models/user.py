@@ -8,7 +8,7 @@ from sqlalchemy import Boolean, DateTime, ForeignKey, String
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.database import ExternalCalendar, Plannable
+from backend.database import ExternalCalendar, Plannable, Tag
 from backend.database.models.base import ORMBase, TimestampMixin
 from backend.misc.defaults import DefaultUserSettings
 
@@ -55,14 +55,20 @@ class User(ORMBase, TimestampMixin):
         cascade="all, delete-orphan",
     )
     # 1 : 0..N
-    plannables: Mapped[list[Plannable]] = relationship(
-        "Plannable",
+    external_calendars: Mapped[list[ExternalCalendar]] = relationship(
+        "ExternalCalendar",
         back_populates="user",
         cascade="all, delete-orphan",
     )
     # 1 : 0..N
-    external_calendars: Mapped[list[ExternalCalendar]] = relationship(
-        "ExternalCalendar",
+    tags: Mapped[list[Tag]] = relationship(
+        "Tag",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    # 1 : 0..N
+    plannables: Mapped[list[Plannable]] = relationship(
+        "Plannable",
         back_populates="user",
         cascade="all, delete-orphan",
     )

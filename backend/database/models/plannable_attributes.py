@@ -1,16 +1,12 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String
+from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.database import Plannable, User
 from backend.database.models.base import ORMBase, TimestampMixin
-
-# TODO:
-#  - Add defaults.
-#  - Add relationships to other tables.
-#  - Annotate cardinalities.
-#  - Research PlannableTag (composite PK?)
+from backend.misc.recurrence import RecurrenceFrequency
+from backend.tools.time import get_current_time_in_default_timezone
 
 
 class Recurrence(ORMBase, TimestampMixin):
@@ -22,37 +18,36 @@ class Recurrence(ORMBase, TimestampMixin):
         primary_key=True,
         autoincrement=True,
     )
-    # An event can recur only if it's not part of a task.
-    plannable_id: Mapped[int | None] = mapped_column(
+    plannable_id: Mapped[int] = mapped_column(
         Integer,
         ForeignKey("plannable.id", ondelete="CASCADE"),
-        nullable=True,
+        nullable=False,
     )
 
     # Data fields.
     start: Mapped[datetime] = mapped_column(
-        DateTime,
+        DateTime(timezone=True),
         nullable=False,
+        default=get_current_time_in_default_timezone,
     )
     until: Mapped[datetime | None] = mapped_column(
-        DateTime,
-        nullable=True,
+        DateTime(timezone=True),
+        nullable=True,  # NULL == forever.
     )
     frequency: Mapped[str] = mapped_column(
-        String(),  # daily, weekly, monthly, annually
+        # `name` is for SQLAlchemy only.
+        Enum(RecurrenceFrequency, name="recurrence_frequency"),
         nullable=False,
+        default=RecurrenceFrequency.DAILY,
     )
     interval: Mapped[int] = mapped_column(
         Integer,
         nullable=False,
-    )
-    count: Mapped[int | None] = mapped_column(
-        Integer,
-        nullable=True,  # NULL == forever.
+        default=1,
     )
 
     # Relationships.
-    # 0..N : 0/1
+    # 0..N : 1
     plannable: Mapped[Plannable] = relationship(
         "Plannable",
         back_populates="recurrence",
@@ -71,6 +66,9 @@ class Tag(ORMBase, TimestampMixin):
     username: Mapped[str] = mapped_column(
         String(),
         ForeignKey("user.username", ondelete="CASCADE"),
+        # Don't allow duplicate tags, i.e. the same (username, name)
+        # pairs, where username and name are Tag's columns.
+        UniqueConstraint("username", "name"),
         nullable=False,
     )
 
@@ -99,7 +97,7 @@ class Tag(ORMBase, TimestampMixin):
 class PlannableTag(ORMBase):
     __tablename__ = "plannable_tag"
 
-    # Keys.
+    # Composite PK.
     plannable_id: Mapped[int] = mapped_column(
         Integer,
         ForeignKey("plannable.id", ondelete="CASCADE"),

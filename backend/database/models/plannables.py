@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKey, Integer, Interval, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.database import ExternalCalendar, User
+from backend.database import ExternalCalendar, Recurrence, Tag, User
 from backend.database.constants import EVENT_POLYMORPHIC_IDENTITY, TASK_POLYMORPHIC_IDENTITY
 from backend.database.models.base import ORMBase, TimestampMixin
 
@@ -71,6 +71,19 @@ class Plannable(ORMBase, TimestampMixin):
         "ExternalCalendar",
         back_populates="plannables",
     )
+    # 1 : 0..N
+    recurrence: Mapped[Recurrence | None] = relationship(
+        "Recurrence",
+        back_populates="plannable",
+        cascade="all, delete-orphan",
+    )
+    # 0..N : 0..N
+    tags: Mapped[list[Tag]] = relationship(
+        "Tag",
+        # Specifies the bridge table.
+        secondary="plannable_tag",
+        back_populates="plannables",
+    )
 
 
 class Task(Plannable):
@@ -95,6 +108,7 @@ class Task(Plannable):
         Interval,
         nullable=False,
     )
+    # TODO: Move to Plannable?
     priority: Mapped[int] = mapped_column(
         Integer,
         nullable=False,
