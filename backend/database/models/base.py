@@ -6,7 +6,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 # To determine the cardinality of a relationship of tables P and C:
 #
 # 1. Find the Child table (C). It always contains the FK to the Parent table (P).
-# 2. The entire relationship is explained by the FK (unless there are some weird extra constraints elsewhere).
+# 2. The entire relationship is explained by the FK (unless some weird extra constraints elsewhere).
 # 3. From C's perspective, the only possible relationships enforced by the FK are:
 #
 #    +--------------------------------------------------+ **

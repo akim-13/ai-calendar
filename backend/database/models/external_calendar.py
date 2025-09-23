@@ -1,8 +1,13 @@
+# mypy: disable-error-code="attr-defined, no-redef"
+from typing import TYPE_CHECKING
+
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.database import Plannable, User
 from backend.database.models.base import ORMBase, TimestampMixin
+
+if TYPE_CHECKING:
+    from backend.database import Plannable, User
 
 
 class ExternalCalendar(ORMBase, TimestampMixin):
@@ -29,10 +34,10 @@ class ExternalCalendar(ORMBase, TimestampMixin):
     # Relationships.
     # 0..N : 1
     user: Mapped[User] = relationship(
-        "User",
+        User,
         back_populates="external_calendars",
     )
     plannables: Mapped[list[Plannable]] = relationship(
-        "Plannable",
+        Plannable,
         back_populates="external_calendar",
     )

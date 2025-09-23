@@ -1,12 +1,16 @@
+# mypy: disable-error-code="attr-defined, no-redef"
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.database import Plannable, User
 from backend.database.models.base import ORMBase, TimestampMixin
 from backend.misc.recurrence import RecurrenceFrequency
 from backend.tools.time import get_current_time_in_default_timezone
+
+if TYPE_CHECKING:
+    from backend.database import Plannable, User
 
 
 class Recurrence(ORMBase, TimestampMixin):
@@ -49,7 +53,7 @@ class Recurrence(ORMBase, TimestampMixin):
     # Relationships.
     # 0..N : 1
     plannable: Mapped[Plannable] = relationship(
-        "Plannable",
+        Plannable,
         back_populates="recurrence",
     )
 
@@ -81,12 +85,12 @@ class Tag(ORMBase, TimestampMixin):
     # Relationships.
     # 0..N : 1
     user: Mapped[User] = relationship(
-        "User",
+        User,
         back_populates="tags",
     )
     # 0..N : 0..N
     plannables: Mapped[list[Plannable]] = relationship(
-        "Plannable",
+        Plannable,
         # Specifies the bridge table.
         secondary="plannable_tag",
         back_populates="tags",

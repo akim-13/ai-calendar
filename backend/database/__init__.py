@@ -1,3 +1,6 @@
+# Ignore unused imports.
+# flake8: noqa: F401
+
 from backend.database.models.external_calendar import ExternalCalendar
 from backend.database.models.plannable_attributes import PlannableTag, Recurrence, Tag
 from backend.database.models.plannables import Event, Plannable, Task

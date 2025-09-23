@@ -1,13 +1,15 @@
-from __future__ import annotations
-
+# mypy: disable-error-code="attr-defined, no-redef"
 from datetime import datetime, timedelta
+from typing import TYPE_CHECKING
 
 from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKey, Integer, Interval, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.database import ExternalCalendar, Recurrence, Tag, User
 from backend.database.constants import EVENT_POLYMORPHIC_IDENTITY, TASK_POLYMORPHIC_IDENTITY
 from backend.database.models.base import ORMBase, TimestampMixin
+
+if TYPE_CHECKING:
+    from backend.database import Event, ExternalCalendar, Recurrence, Tag, User
 
 
 class Plannable(ORMBase, TimestampMixin):
@@ -68,18 +70,18 @@ class Plannable(ORMBase, TimestampMixin):
     )
     # 0..N : 0/1
     external_calendar: Mapped[ExternalCalendar] = relationship(
-        "ExternalCalendar",
+        ExternalCalendar,
         back_populates="plannables",
     )
     # 1 : 0..N
     recurrence: Mapped[Recurrence | None] = relationship(
-        "Recurrence",
+        Recurrence,
         back_populates="plannable",
         cascade="all, delete-orphan",
     )
     # 0..N : 0..N
     tags: Mapped[list[Tag]] = relationship(
-        "Tag",
+        Tag,
         # Specifies the bridge table.
         secondary="plannable_tag",
         back_populates="plannables",
@@ -90,7 +92,7 @@ class Task(Plannable):
     __tablename__ = "task"
     # Correspond to the value of the `type` column specified in the
     # `polymorphic_on` mapper arg in the parent table (Plannable).
-    __mapper_args__ = {"polymorphic_identity": TASK_POLYMORPHIC_IDENTITY}
+    __mapper_args__ = {"polymorphic_identity": TASK_POLYMORPHIC_IDENTITY}  # type: ignore[dict-item]
 
     # Keys.
     id: Mapped[int] = mapped_column(
@@ -116,8 +118,8 @@ class Task(Plannable):
 
     # Relationships.
     # 0/1 : 0..N
-    events: Mapped[list["Event"]] = relationship(
-        "Event",
+    events: Mapped[list[Event]] = relationship(
+        Event,
         back_populates="task",
         cascade="all, delete-orphan",
     )
@@ -126,7 +128,9 @@ class Task(Plannable):
 
 class Event(Plannable):
     __tablename__ = "event"
-    __mapper_args__ = {"polymorphic_identity": EVENT_POLYMORPHIC_IDENTITY}
+    __mapper_args__ = {
+        "polymorphic_identity": EVENT_POLYMORPHIC_IDENTITY  # type: ignore[dict-item]
+    }
 
     # Keys.
     id: Mapped[int] = mapped_column(
@@ -147,7 +151,7 @@ class Event(Plannable):
     # Relationships.
     # 0..N : 0/1
     task: Mapped[Task] = relationship(
-        "Task",
+        Task,
         back_populates="events",
     )
     # NOTE: No relationship to Plannable because it's inherited from it.
