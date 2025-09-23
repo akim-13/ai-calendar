@@ -14,7 +14,7 @@ engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(bind=engine)
 
 
-def yield_db() -> Generator[Session, None, None]:
+def get_db() -> Generator[Session, None, None]:
     """
     Provide a database session and ensure it is closed after use.
     """

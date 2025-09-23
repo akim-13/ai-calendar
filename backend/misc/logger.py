@@ -4,6 +4,7 @@ import logging.config
 from backend.misc.config import logging_config
 
 # Logging level guidelines:
+#
 # DEBUG   – Detailed internal information, put them in when you write the code.
 #           Example: "Querying DB with params {...}" or "Response payload {...}"
 #
@@ -26,6 +27,7 @@ class ColonLevelFormatter(logging.Formatter):
         level_with_colon: str = f"{record.levelname}:"
         # Pad that field so it's as wide as the longest level+colon.
         record.level_colon = level_with_colon.ljust(9)
+
         return super().format(record)
 
 

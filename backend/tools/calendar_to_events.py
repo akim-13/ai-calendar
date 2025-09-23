@@ -2,7 +2,8 @@ import requests
 from ics import Calendar
 
 
-def get_events_from_external_cal_link(link: str) -> dict:
+def get_events_from_external_cal_link(link: str) -> None:
+    raise NotImplementedError
     """Fetch events from an external ICS calendar link and return them as lists of attributes."""
     eventList = []
 
