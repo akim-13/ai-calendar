@@ -3,21 +3,22 @@ from typing import Any, Dict
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
 
-from backend.database.models import Task
-from backend.services import achievements
+from backend.database import Task
 from backend.tools.jsonify import convertToJson
 
 
-def get_user_tasks(username: str, db: Session) -> Dict[str, Any]:
+def get_user_tasks(username: str, db: Session) -> None:
     """Return all tasks for a user as JSON, or an empty list if none exist."""
+    raise NotImplementedError
 
     tasks = db.query(Task).filter(Task.username == username).all()
 
     return {"tasks": [convertToJson(task) for task in tasks]} if tasks else {"tasks": []}
 
 
-def get_latest_user_task(username: str, db: Session) -> Dict[str, Any]:
+def get_latest_user_task(username: str, db: Session) -> None:
     """Return the most recent task for a user, or None if none exist."""
+    raise NotImplementedError
 
     latest_task = (
         db.query(Task).filter(Task.username == username).order_by(desc(Task.taskID)).first()
@@ -26,8 +27,9 @@ def get_latest_user_task(username: str, db: Session) -> Dict[str, Any]:
     return {"latest_task": convertToJson(latest_task)} if latest_task else {"latest_task": None}
 
 
-def edit_task(taskID: int, task_properties: Dict[str, Any], db: Session) -> Dict[str, bool]:
+def edit_task(taskID: int, task_properties: Dict[str, Any], db: Session) -> None:
     """Update a task’s attributes if valid and types match; reject otherwise."""
+    raise NotImplementedError
 
     task = db.query(Task).filter(Task.taskID == taskID).first()
     for attribute, value in task_properties.items():
@@ -43,8 +45,9 @@ def edit_task(taskID: int, task_properties: Dict[str, Any], db: Session) -> Dict
     return {"success": True}
 
 
-def set_task_complete(task_id: int, db: Session) -> Dict[str, Any]:
-    """Mark a task complete, add points, and update achievements."""
+def set_task_complete(task_id: int, db: Session) -> None:
+    """Mark a task complete and add points."""
+    raise NotImplementedError
 
     task: Task = db.query(Task).filter(Task.taskID == task_id).first()
     if not task or task.isCompleted:
@@ -54,11 +57,12 @@ def set_task_complete(task_id: int, db: Session) -> Dict[str, Any]:
     task.isCompleted = True
     db.commit()
 
-    return {"task_changed": True} | achievements.update_from_user(task.username, db)
+    return {"task_changed": True}
 
 
-def set_task_incomplete(task_id: int, db: Session) -> Dict[str, Any]:
+def set_task_incomplete(task_id: int, db: Session) -> None:
     """Mark a task incomplete, remove points, and update achievements."""
+    raise NotImplementedError
 
     task: Task = db.query(Task).filter(Task.taskID == task_id).first()
     if not task or not task.isCompleted:
@@ -68,11 +72,12 @@ def set_task_incomplete(task_id: int, db: Session) -> Dict[str, Any]:
     task.isCompleted = False
     db.commit()
 
-    return {"task_changed": True} | achievements.update_from_user(task.username, db)
+    return {"task_changed": True}
 
 
-def delete_task(task_id: int, db: Session) -> Dict[str, bool]:
+def delete_task(task_id: int, db: Session) -> None:
     """Delete a task if it exists, otherwise return false."""
+    raise NotImplementedError
 
     task = db.query(Task).filter(Task.taskID == task_id).first()
     if task:

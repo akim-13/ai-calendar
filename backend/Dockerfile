@@ -1,5 +1,5 @@
 # Use a slim Python base to keep images smaller.
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 WORKDIR /app
 
@@ -14,4 +14,4 @@ COPY . .
 EXPOSE 8000
 
 # Compose overrides this with --reload in dev, but this is a sensible default.
-CMD ["uvicorn", "main:run_app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "backend.main:run_app", "--host", "0.0.0.0", "--port", "8000"]

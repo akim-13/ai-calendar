@@ -1,0 +1,3 @@
+DATABASE_URL = "sqlite:///./database.db"
+EVENT_POLYMORPHIC_IDENTITY = "event"
+TASK_POLYMORPHIC_IDENTITY = "task"

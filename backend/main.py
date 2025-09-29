@@ -4,10 +4,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.database.dbsetup import SessionLocal, engine
-from backend.database.models import ORM_Base
+from backend.database.db_session import SessionLocal, engine
+from backend.database.models.base import ORMBase
 from backend.misc.logger import configure_logging, get_logger
-from backend.routers import achievements, calendars, events, tasks, users
+from backend.routers import events, tasks, users
 from backend.services.startup import startup
 
 # TODO:
@@ -23,7 +23,9 @@ log = get_logger(__name__)
 async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
     log.warning("Starting up application.")
 
-    ORM_Base.metadata.create_all(bind=engine)
+    # TODO: Switch to using Alembic in the future.
+    # ORMBase.metadata.drop_all(bind=engine)
+    ORMBase.metadata.create_all(bind=engine)
 
     with SessionLocal() as db:
         startup(db)
@@ -47,11 +49,17 @@ app.add_middleware(
 )
 
 
-def run_app() -> FastAPI:  # pragma: no cover
-    app.include_router(users.router, prefix="/users", tags=["Users"])
-    app.include_router(achievements.router, prefix="/achievements", tags=["Achievements"])
-    app.include_router(tasks.router, prefix="/tasks", tags=["Tasks"])
-    app.include_router(events.router, prefix="/events", tags=["Events"])
-    app.include_router(calendars.router, prefix="/calendars", tags=["Calendars"])
+def run_app() -> FastAPI:
+    routers = [
+        (users.router, "/users", ["Users"]),
+        (tasks.router, "/tasks", ["Tasks"]),
+        (events.router, "/events", ["Events"]),
+    ]
+    for router, prefix, tags in routers:
+        app.include_router(
+            router,
+            prefix=prefix,
+            tags=tags,  # type: ignore
+        )
 
     return app

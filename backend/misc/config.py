@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_URL = "sqlite:///./database.db"
 API_KEY = os.getenv("OPENAI_API_KEY")
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M"
 
