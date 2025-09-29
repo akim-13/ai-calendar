@@ -1,4 +1,6 @@
 # mypy: disable-error-code="attr-defined, no-redef"
+from __future__ import annotations
+
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING
 
@@ -9,7 +11,7 @@ from backend.database.constants import EVENT_POLYMORPHIC_IDENTITY, TASK_POLYMORP
 from backend.database.models.base import ORMBase, TimestampMixin
 
 if TYPE_CHECKING:
-    from backend.database import Event, ExternalCalendar, Recurrence, Tag, User
+    from backend.database import ExternalCalendar, Recurrence, Tag, User
 
 
 class Plannable(ORMBase, TimestampMixin):
@@ -19,7 +21,7 @@ class Plannable(ORMBase, TimestampMixin):
     # specify their polymorphic identities), then e.g., querying for all
     # Plannables would return all objects as Plannable, not as Task or Event.
     __mapper_args__ = {
-        "polymorphic_on": type,
+        "polymorphic_on": "type",
     }
 
     # Keys.
@@ -65,23 +67,23 @@ class Plannable(ORMBase, TimestampMixin):
     # Relationships.
     # 0..N : 1
     user: Mapped[User] = relationship(
-        User,
+        "User",
         back_populates="plannables",
     )
     # 0..N : 0/1
     external_calendar: Mapped[ExternalCalendar] = relationship(
-        ExternalCalendar,
+        "ExternalCalendar",
         back_populates="plannables",
     )
     # 1 : 0..N
     recurrence: Mapped[Recurrence | None] = relationship(
-        Recurrence,
+        "Recurrence",
         back_populates="plannable",
         cascade="all, delete-orphan",
     )
     # 0..N : 0..N
     tags: Mapped[list[Tag]] = relationship(
-        Tag,
+        "Tag",
         # Specifies the bridge table.
         secondary="plannable_tag",
         back_populates="plannables",
@@ -119,7 +121,7 @@ class Task(Plannable):
     # Relationships.
     # 0/1 : 0..N
     events: Mapped[list[Event]] = relationship(
-        Event,
+        "Event",
         back_populates="task",
         cascade="all, delete-orphan",
     )

@@ -1,4 +1,6 @@
 # mypy: disable-error-code="attr-defined, no-redef"
+from __future__ import annotations
+
 from datetime import datetime
 from typing import TYPE_CHECKING
 
@@ -7,7 +9,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.database.models.base import ORMBase, TimestampMixin
 from backend.misc.recurrence import RecurrenceFrequency
-from backend.tools.time import get_current_time_in_default_timezone
+from backend.tools.time_defaults import get_current_time_in_default_timezone
 
 if TYPE_CHECKING:
     from backend.database import Plannable, User
@@ -53,13 +55,16 @@ class Recurrence(ORMBase, TimestampMixin):
     # Relationships.
     # 0..N : 1
     plannable: Mapped[Plannable] = relationship(
-        Plannable,
+        "Plannable",
         back_populates="recurrence",
     )
 
 
 class Tag(ORMBase, TimestampMixin):
     __tablename__ = "tag"
+    # Don't allow duplicate tags, i.e. the same (username, name)
+    # pairs, where username and name are Tag's columns.
+    __table_args__ = (UniqueConstraint("username", "name"),)
 
     # Keys.
     id: Mapped[int] = mapped_column(
@@ -70,9 +75,6 @@ class Tag(ORMBase, TimestampMixin):
     username: Mapped[str] = mapped_column(
         String(),
         ForeignKey("user.username", ondelete="CASCADE"),
-        # Don't allow duplicate tags, i.e. the same (username, name)
-        # pairs, where username and name are Tag's columns.
-        UniqueConstraint("username", "name"),
         nullable=False,
     )
 
@@ -85,12 +87,12 @@ class Tag(ORMBase, TimestampMixin):
     # Relationships.
     # 0..N : 1
     user: Mapped[User] = relationship(
-        User,
+        "User",
         back_populates="tags",
     )
     # 0..N : 0..N
     plannables: Mapped[list[Plannable]] = relationship(
-        Plannable,
+        "Plannable",
         # Specifies the bridge table.
         secondary="plannable_tag",
         back_populates="tags",

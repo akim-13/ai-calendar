@@ -1,16 +1,20 @@
 # mypy: disable-error-code="attr-defined, no-redef"
+from __future__ import annotations
+
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, String
-from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, String
+
+# TODO: Use JSONB instead of JSON
+# from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.database.models.base import ORMBase, TimestampMixin
 from backend.misc.defaults import DefaultUserSettings
 
 if TYPE_CHECKING:
-    from backend.database import ExternalCalendar, Plannable, Tag, UserModelParameters, UserSettings
+    from backend.database import ExternalCalendar, Plannable, Tag
 
 
 class User(ORMBase, TimestampMixin):
@@ -40,7 +44,7 @@ class User(ORMBase, TimestampMixin):
     # The same logic applies to UserModelParameters.
     # 1 : 0/1
     settings: Mapped[UserSettings | None] = relationship(
-        UserSettings,
+        "UserSettings",
         # This reads as "If User.settings is assigned, assign
         # UserSettings.user to this User, and vice versa".
         back_populates="user",
@@ -50,25 +54,25 @@ class User(ORMBase, TimestampMixin):
     )
     # 1 : 0/1
     model_parameters: Mapped[UserModelParameters | None] = relationship(
-        UserModelParameters,
+        "UserModelParameters",
         back_populates="user",
         cascade="all, delete-orphan",
     )
     # 1 : 0..N
     external_calendars: Mapped[list[ExternalCalendar]] = relationship(
-        ExternalCalendar,
+        "ExternalCalendar",
         back_populates="user",
         cascade="all, delete-orphan",
     )
     # 1 : 0..N
     tags: Mapped[list[Tag]] = relationship(
-        Tag,
+        "Tag",
         back_populates="user",
         cascade="all, delete-orphan",
     )
     # 1 : 0..N
     plannables: Mapped[list[Plannable]] = relationship(
-        Plannable,
+        "Plannable",
         back_populates="user",
         cascade="all, delete-orphan",
     )
@@ -100,7 +104,7 @@ class UserSettings(ORMBase, TimestampMixin):
     # Relationships.
     # 0/1 : 1
     user: Mapped[User] = relationship(
-        User,
+        "User",
         # This reads as "If UserSettings.user is assigned, assign
         # User.settings to this UserSettings, and vice versa".
         back_populates="settings",
@@ -119,14 +123,14 @@ class UserModelParameters(ORMBase, TimestampMixin):
 
     # Data fields.
     parameters: Mapped[dict] = mapped_column(
-        # PostgreSQL-specific.
-        JSONB,
+        # TODO: Use JSONB instead of JSON
+        JSON,
         nullable=False,
     )
 
     # Relationships.
     # 0/1 : 1
     user: Mapped[User] = relationship(
-        User,
+        "User",
         back_populates="model_parameters",
     )
