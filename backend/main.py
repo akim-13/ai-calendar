@@ -23,6 +23,8 @@ log = get_logger(__name__)
 async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
     log.warning("Starting up application.")
 
+    # TODO: Switch to using Alembic in the future.
+    # ORMBase.metadata.drop_all(bind=engine)
     ORMBase.metadata.create_all(bind=engine)
 
     with SessionLocal() as db:

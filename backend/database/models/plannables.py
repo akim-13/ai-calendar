@@ -122,8 +122,9 @@ class Task(Plannable):
     # 0/1 : 0..N
     events: Mapped[list[Event]] = relationship(
         "Event",
-        back_populates="task",
+        back_populates="tasks",
         cascade="all, delete-orphan",
+        foreign_keys="Event.task_id",
     )
     # NOTE: No relationship to Plannable because it's inherited from it.
 
@@ -152,8 +153,9 @@ class Event(Plannable):
 
     # Relationships.
     # 0..N : 0/1
-    task: Mapped[Task] = relationship(
+    tasks: Mapped[Task] = relationship(
         Task,
         back_populates="events",
+        foreign_keys=[task_id],
     )
     # NOTE: No relationship to Plannable because it's inherited from it.

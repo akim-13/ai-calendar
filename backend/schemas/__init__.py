@@ -15,6 +15,11 @@ from backend.database import (
     UserSettings,
 )
 
+# flake8: noqa: F403, F401
+from backend.schemas.events import *
+from backend.schemas.tasks import *
+from backend.schemas.users import *
+
 # NOTE: Use these in FastAPI's routers.
 ExternalCalendarSchema: _TypeAlias = _sqlalchemy_to_pydantic(ExternalCalendar)  # type: ignore
 PlannableTagSchema: _TypeAlias = _sqlalchemy_to_pydantic(PlannableTag)  # type: ignore
