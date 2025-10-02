@@ -11,5 +11,5 @@ COPY . .
 
 EXPOSE 3000
 
-# Dev server; Compose overrides it by also passing --host and --port.
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "3000"]
+

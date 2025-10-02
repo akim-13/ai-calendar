@@ -7,6 +7,7 @@ import InputPrompt from "./components/InputPrompt";
 import SignIn from "./components/SignIn"; // Import the SignIn component
 import "./styles/fullcalendar.css";
 import LoadingOverlay from "./components/LoadingOverlay";
+import { API_BASE_URL } from "./api";
 
 export interface StandaloneEvent {
   standaloneEventName: string;
@@ -57,7 +58,7 @@ const App: React.FC = () => {
   const fetchStandaloneEvents = async () => {
       try {
           const standaloneEventsResponse = await axios.get(
-              `http://localhost:8000/get_standalone_events/${username}`
+              `${API_BASE_URL}/get_standalone_events/${username}`
           );
           setStandaloneEvents(standaloneEventsResponse.data.standalone_events);
       } catch (error) {
@@ -68,7 +69,7 @@ const App: React.FC = () => {
   const fetchTaskEvents = async () => {
       try {
           const eventsResponse = await axios.get(
-              `http://localhost:8000/get_events_from_user/${username}`
+              `${API_BASE_URL}/get_events_from_user/${username}`
           );
           setTaskEvents(eventsResponse.data.events);
       } catch (error) {
@@ -78,7 +79,7 @@ const App: React.FC = () => {
 
   const fetchTasks = async () => {
       try {
-          const taskResponse = await axios.get(`http://localhost:8000/get_user_tasks/${username}`);
+          const taskResponse = await axios.get(`${API_BASE_URL}/get_user_tasks/${username}`);
           setTasks(taskResponse.data.tasks)
       } catch (error) {
           console.error("Error fetching tasks:", error);
