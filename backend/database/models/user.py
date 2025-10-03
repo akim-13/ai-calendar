@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 
 
 class User(ORMBase, TimestampMixin):
+    """User ORM model"""
     __tablename__ = "user"
 
     # Keys.
