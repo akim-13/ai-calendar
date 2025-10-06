@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "task_id": 101,
+    "start": "2025-10-13T09:00:00Z",
+    "end": "2025-10-13T11:00:00Z",
+    "priority": 2,
+    "tag": "study"
+  },
+  {
+    "id": 2,
+    "task_id": 202,
+    "start": "2025-10-14T14:30:00Z",
+    "end": "2025-10-14T16:00:00Z",
+    "priority": 1,
+    "tag": "workout"
+  },
+  {
+    "id": 3,
+    "task_id": 101,
+    "start": "2025-10-15T10:00:00Z",
+    "end": "2025-10-15T12:00:00Z",
+    "priority": 2,
+    "tag": "meeting"
+  },
+  {
+    "id": 4,
+    "task_id": 303,
+    "start": "2025-10-16T18:00:00Z",
+    "end": "2025-10-16T19:30:00Z",
+    "priority": 0,
+    "tag": "reading"
+  },
+  {
+    "id": 5,
+    "task_id": 101,
+    "start": "2025-10-17T08:30:00Z",
+    "end": "2025-10-17T10:00:00Z",
+    "priority": 2,
+    "tag": "coding"
+  },
+  {
+    "id": 6,
+    "task_id": 202,
+    "start": "2025-10-18T12:00:00Z",
+    "end": "2025-10-18T13:30:00Z",
+    "priority": 1,
+    "tag": "workout"
+  },
+  {
+    "id": 7,
+    "task_id": 404,
+    "start": "2025-10-19T15:00:00Z",
+    "end": "2025-10-19T17:00:00Z",
+    "priority": 0,
+    "tag": "social"
+  }
+]

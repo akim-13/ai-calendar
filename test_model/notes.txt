@@ -10,9 +10,19 @@
 10. UMP (parameters) session_gap and working_time
 
 
-VARIABLES NOTATION for LLM 
+VARIABLES NOTATION for LLM:
     relation_to_day_period = (before/after/around)
     task deadline = monday/tuesday/ .. /friday
     task_order = another tag of the task that is related to plannable
     number_of_task_order = first lecture/second free time/third meal
     relation_to_task_order = (before/after/around) 
+
+POTENTIAL VARIABLES for LLM:
+    month = ??
+    relation_to_month = next/last
+    day_of_month = 1,2,..31
+    relation_to_day_of_month = last/first
+
+
+1. take llm + ump json file -> convert into pydantic model without ticks -> find the scope -> result is the interval in ISO format -> return to database process 
+2. Take the interval from scope finding from the database -> pydantic (interval from scope) (not all field are used, convert start, end, deadline from ISO to ticks) 

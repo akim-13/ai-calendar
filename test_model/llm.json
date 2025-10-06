@@ -3,33 +3,14 @@
   "task_tag": "coursework",
   "priority": 1,
   "task_length_min": 1200,
-  "task_ticks_length": 80,
   "hours_per_day": 2,
   "spread": "evenly",
   "day_period_start": "", 
   "day_period_end": "",
   "relation_to_day_period": "",
-  "absolute_deadline_datetime": "2025-10-23T23:59:59",
-  "task_deadline": "",
-  "task_order": "",
-  "number_of_task_order": "",
-  "relation_to_task_order": "",
-
-  "min_session_hours": 1,
-  "max_session_hours": 2,
-  "break_between_sessions_ticks": 1,
-
-  "sleep_windows": [
-    { "start": "23:00", "end": "07:00" }
-  ],
-  "do_not_disturb": [
-    { "start": "12:30", "end": "13:30" }
-  ],
-  "preferred_windows": [
-    { "start": "09:00", "end": "12:00", "weight": 1.0 },
-    { "start": "18:00", "end": "20:00", "weight": 0.5 }
-  ],
-
-  "allowed_weekdays": [0, 1, 2, 3, 4]
-
+  "scope_start": "2024-11-01T00:00:00",
+  "scope_end": "2024-11-30T23:59:59",
+  "another_task_mentioned": "",
+  "number_of_another_task_mentioned": null,
+  "relation_to_another_task_mentioned": ""
 }

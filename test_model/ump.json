@@ -1,0 +1,16 @@
+ {
+  "min_session_hours": 1,
+  "max_session_hours": 2,
+  "break_between_sessions_hours": 1,
+
+  "sleep_start": "23:00",
+  "sleep_end": "07:00",
+
+  "do_not_disturb_start": "09:00",
+  "do_not_disturb_end": "12:00",
+
+  "preferred_hours_start": "12:00",
+  "preferred_hours_end": "20:00",
+
+  "allowed_weekdays": [0, 1, 2, 3, 4]
+}
