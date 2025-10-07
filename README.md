@@ -6,14 +6,7 @@ This project ships with a `docker-compose.yml` that runs both the backend (FastA
 - An OpenAI API key (you can run w/o it, but AI won't work)
 
 ### Environment variables
-Create a `.env` file in the repo root:
-
-```bash
-OPENAI_API_KEY=sk-yourkeyhere
-HOST_REPO_ABSOLUTE_PATH=/absolute/path/to/this/repo
-```
-
-The last variable is optional, `docker compose` will fall back to a default value if unset. However, it is recommended to set it for a better debugging experience.
+You need to create a file named `.env` in the repo root and define a number of environment variables. See `.env.example` to find out which variables have to be set.
 
 ### Pre-commit hooks
 As the name implies, these hooks (scripts) are run automatically before `git commit`. They won't allow you to commit your changes unless all tests pass first. Some of them just fix formatting (e.g., remove trailing whitespaces), while others flag unusud variables, incorrect return types, etc. The same hooks are also run automatically on GitHub.

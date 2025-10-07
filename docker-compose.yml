@@ -1,18 +1,4 @@
 services:
-  backend:
-    build: ./backend
-    working_dir: ${HOST_REPO_ABSOLUTE_PATH:-/app}
-    command: uvicorn backend.main:run_app --host 0.0.0.0 --port 8000 --reload
-    ports:
-      - "8000:8000"
-    env_file:
-      - .env
-    environment:
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
-      PYTHONPATH: ${HOST_REPO_ABSOLUTE_PATH:-/app}
-    volumes:
-      - .:${HOST_REPO_ABSOLUTE_PATH:-/app}
-
   frontend:
     build: ./frontend
     command: sh -lc 'test -d node_modules || npm ci; npm run dev -- --host 0.0.0.0 --port 3000'
@@ -24,6 +10,36 @@ services:
       # On host it is not visible/is empty. This prevents polluting host with os specific binaries.
       - node_deps:/app/node_modules
 
+  backend:
+    build: ./backend
+    working_dir: ${HOST_REPO_ABSOLUTE_PATH:-/app}
+    command: uvicorn backend.main:run_app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: ${HOST_REPO_ABSOLUTE_PATH:-/app}
+    volumes:
+      - .:${HOST_REPO_ABSOLUTE_PATH:-/app}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:15
+    env_file:
+      - .env
+    ports:
+      - "${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432}"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   pre-commit:
     build: .dev-setup
     working_dir: /app
@@ -33,5 +49,6 @@ services:
       - pre-commit-cache:/root/.cache/pre-commit
 
 volumes:
+  postgres_data:
   node_deps:
   pre-commit-cache:
