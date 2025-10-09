@@ -1,14 +1,17 @@
 services:
   frontend:
     build: ./frontend
-    command: sh -lc 'test -d node_modules || npm ci; npm run dev -- --host 0.0.0.0 --port 3000'
+    working_dir: ${HOST_REPO_ABSOLUTE_PATH:-/app}/frontend
+    command: sh -lc 'test -d node_modules || npm ci; npm run dev -- --host 0.0.0.0 --port 5173'
     ports:
-      - "3000:3000"
+      - "5173:5173"
+    env_file:
+      - .env
     volumes:
-      - ./frontend:/app
+      - ./frontend:${HOST_REPO_ABSOLUTE_PATH:-/app}/frontend
       # Create an anonymous volume that's only available to the container and managed by Docker.
       # On host it is not visible/is empty. This prevents polluting host with os specific binaries.
-      - node_deps:/app/node_modules
+      - node_deps:${HOST_REPO_ABSOLUTE_PATH:-/app}/frontend/node_modules
 
   backend:
     build: ./backend
