@@ -2,7 +2,7 @@ services:
   frontend:
     build: ./frontend
     working_dir: ${HOST_REPO_ABSOLUTE_PATH:-/app}/frontend
-    command: sh -lc 'test -d node_modules || npm ci; npm run dev -- --host 0.0.0.0 --port 5173'
+    command: sh -lc '[ "$(ls -A node_modules 2>/dev/null)" ] || npm ci; npm run dev -- --host 0.0.0.0 --port 5173'
     ports:
       - "5173:5173"
     env_file:

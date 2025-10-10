@@ -4,7 +4,9 @@ WORKDIR /app
 
 # Install deps using the lockfile.
 COPY package*.json ./
-RUN npm install
+# NOTE: If executables inside the container are missing/corrupted,
+# delete node_modules and run `npm ci` manually inside it.
+RUN npm ci
 
 # Copy the rest of the source code.
 COPY . .
