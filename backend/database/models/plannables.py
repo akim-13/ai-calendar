@@ -30,9 +30,9 @@ class Plannable(ORMBase, TimestampMixin):
         primary_key=True,
         autoincrement=True,
     )
-    username: Mapped[str] = mapped_column(
+    user_id: Mapped[str] = mapped_column(
         String(),
-        ForeignKey("user.username", ondelete="CASCADE"),
+        ForeignKey("user.id", ondelete="CASCADE"),
         nullable=False,
     )
     external_calendar_id: Mapped[int | None] = mapped_column(

@@ -28,6 +28,5 @@ TagSchema: _TypeAlias = _sqlalchemy_to_pydantic(Tag)  # type: ignore
 EventSchema: _TypeAlias = _sqlalchemy_to_pydantic(Event)  # type: ignore
 PlannableSchema: _TypeAlias = _sqlalchemy_to_pydantic(Plannable)  # type: ignore
 TaskSchema: _TypeAlias = _sqlalchemy_to_pydantic(Task)  # type: ignore
-UserSchema: _TypeAlias = _sqlalchemy_to_pydantic(User)  # type: ignore
 UserModelParametersSchema: _TypeAlias = _sqlalchemy_to_pydantic(UserModelParameters)  # type: ignore
 UserSettingsSchema: _TypeAlias = _sqlalchemy_to_pydantic(UserSettings)  # type: ignore

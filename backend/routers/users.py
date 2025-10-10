@@ -1,14 +1,14 @@
 from fastapi import APIRouter
 
 from backend.database import DBSession
-from backend.schemas import CreateUserRequest, UserSchema
+from backend.schemas import CreateUserRequest, UserResponse
 from backend.services.users import create_user
 
 router = APIRouter()
 
 
-@router.post("/create", response_model=UserSchema)
-def create(db: DBSession, request: CreateUserRequest) -> UserSchema:
+@router.post("/create", response_model=UserResponse, operation_id="createUser")
+def create_user_endpoint(db: DBSession, request: CreateUserRequest) -> UserResponse:
     """Create a new user account."""
     user = create_user(db, request.username)
-    return UserSchema.from_orm(user)
+    return UserResponse.model_validate(user)

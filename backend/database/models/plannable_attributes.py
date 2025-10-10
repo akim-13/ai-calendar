@@ -62,9 +62,9 @@ class Recurrence(ORMBase, TimestampMixin):
 
 class Tag(ORMBase, TimestampMixin):
     __tablename__ = "tag"
-    # Don't allow duplicate tags, i.e. the same (username, name)
-    # pairs, where username and name are Tag's columns.
-    __table_args__ = (UniqueConstraint("username", "name"),)
+    # Don't allow duplicate tags, i.e. the same (user_id, name)
+    # pairs, where user_id and name are Tag's columns.
+    __table_args__ = (UniqueConstraint("user_id", "name"),)
 
     # Keys.
     id: Mapped[int] = mapped_column(
@@ -72,9 +72,9 @@ class Tag(ORMBase, TimestampMixin):
         primary_key=True,
         autoincrement=True,
     )
-    username: Mapped[str] = mapped_column(
+    user_id: Mapped[str] = mapped_column(
         String(),
-        ForeignKey("user.username", ondelete="CASCADE"),
+        ForeignKey("user.id", ondelete="CASCADE"),
         nullable=False,
     )
 

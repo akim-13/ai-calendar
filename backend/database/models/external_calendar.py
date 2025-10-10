@@ -21,9 +21,9 @@ class ExternalCalendar(ORMBase, TimestampMixin):
         primary_key=True,
         autoincrement=True,
     )
-    username: Mapped[str | None] = mapped_column(
+    user_id: Mapped[str | None] = mapped_column(
         String(),
-        ForeignKey("user.username", ondelete="CASCADE"),
+        ForeignKey("user.id", ondelete="CASCADE"),
         nullable=False,
     )
 

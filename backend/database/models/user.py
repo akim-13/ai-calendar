@@ -4,7 +4,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, String
+from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, Integer, String
 
 # TODO: Use JSONB instead of JSON
 # from sqlalchemy.dialects.postgresql import JSONB
@@ -21,12 +21,18 @@ class User(ORMBase, TimestampMixin):
     __tablename__ = "user"
 
     # Keys.
-    username: Mapped[str] = mapped_column(
-        String(),
+    id: Mapped[int] = mapped_column(
+        Integer,
         primary_key=True,
+        autoincrement=True,
     )
 
     # Data fields.
+    username: Mapped[str] = mapped_column(
+        String(),
+        unique=True,
+        nullable=False,
+    )
     last_login: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True),
         nullable=True,
@@ -82,10 +88,10 @@ class UserSettings(ORMBase, TimestampMixin):
     __tablename__ = "user_settings"
 
     # Keys.
-    username: Mapped[str] = mapped_column(
+    user_id: Mapped[str] = mapped_column(
         String(),
         # `ondelete` makes the DB delete UserSettings row if parent User row is deleted.
-        ForeignKey("user.username", ondelete="CASCADE"),
+        ForeignKey("user.id", ondelete="CASCADE"),
         primary_key=True,
     )
 
@@ -115,9 +121,9 @@ class UserModelParameters(ORMBase, TimestampMixin):
     __tablename__ = "user_model_parameters"
 
     # Keys.
-    username: Mapped[str] = mapped_column(
+    user_id: Mapped[str] = mapped_column(
         String(),
-        ForeignKey("user.username", ondelete="CASCADE"),
+        ForeignKey("user.id", ondelete="CASCADE"),
         primary_key=True,
     )
 
