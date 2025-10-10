@@ -26,3 +26,5 @@ POTENTIAL VARIABLES for LLM:
 
 1. take llm + ump json file -> convert into pydantic model without ticks -> find the scope -> result is the interval in ISO format -> return to database process 
 2. Take the interval from scope finding from the database -> pydantic (interval from scope) (not all field are used, convert start, end, deadline from ISO to ticks) 
+
+add llm instruction to count everything in 5 mins intervals

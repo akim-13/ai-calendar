@@ -26,11 +26,11 @@ class EventList(BaseModel):
     
     @field_validator('events')
     @classmethod
-    def unique_ids(cls, v: List[Event]) -> List[Event]:
-        ids = [event.id for event in v]
+    def unique_ids(cls, even_list: List[Event]) -> List[Event]:
+        ids = [event.id for event in even_list]
         if len(ids) != len(set(ids)):
             raise ValueError("Event IDs must be unique")
-        return v
+        return even_list
     
 with open("test_model/database.json", encoding="utf-8") as f:
     database_raw = json.load(f)

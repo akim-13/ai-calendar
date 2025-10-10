@@ -1,9 +1,9 @@
 {
-  "task_name": "math coursework",
-  "task_tag": "coursework",
+  "title": "math coursework",
+  "tag": "coursework",
   "priority": 1,
-  "task_length_min": 1200,
-  "hours_per_day": 2,
+  "task_length_minutes": 1200,
+  "max_allowed_hours_per_day": 2,
   "spread": "evenly",
   "day_period_start": "", 
   "day_period_end": "",
