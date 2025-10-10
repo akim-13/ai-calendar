@@ -50,14 +50,10 @@ export interface HTTPValidationError {
   detail?: ValidationError[];
 }
 
-export type UserLastLogin = string | null;
-
-export interface User {
+export interface UserResponse {
+  id: number;
   username: string;
-  last_login?: UserLastLogin;
   is_active: boolean;
-  created_at: string;
-  updated_at: string;
 }
 
 export type ValidationErrorLocItem = string | number;
@@ -72,9 +68,9 @@ export interface ValidationError {
  * Create a new user account.
  * @summary Create
  */
-export const createUsersCreatePost = (
+export const createUser = (
     createUserRequest: CreateUserRequest, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<User>> => {
+ ): Promise<AxiosResponse<UserResponse>> => {
 
 
     return axios.default.post(
@@ -85,11 +81,11 @@ export const createUsersCreatePost = (
 
 
 
-export const getCreateUsersCreatePostMutationOptions = <TError = AxiosError<HTTPValidationError>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createUsersCreatePost>>, TError,{data: CreateUserRequest}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof createUsersCreatePost>>, TError,{data: CreateUserRequest}, TContext> => {
+export const getCreateUserMutationOptions = <TError = AxiosError<HTTPValidationError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createUser>>, TError,{data: CreateUserRequest}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof createUser>>, TError,{data: CreateUserRequest}, TContext> => {
 
-const mutationKey = ['createUsersCreatePost'];
+const mutationKey = ['createUser'];
 const {mutation: mutationOptions, axios: axiosOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -99,10 +95,10 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createUsersCreatePost>>, {data: CreateUserRequest}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createUser>>, {data: CreateUserRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  createUsersCreatePost(data,axiosOptions)
+          return  createUser(data,axiosOptions)
         }
 
 
@@ -110,23 +106,23 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type CreateUsersCreatePostMutationResult = NonNullable<Awaited<ReturnType<typeof createUsersCreatePost>>>
-    export type CreateUsersCreatePostMutationBody = CreateUserRequest
-    export type CreateUsersCreatePostMutationError = AxiosError<HTTPValidationError>
+    export type CreateUserMutationResult = NonNullable<Awaited<ReturnType<typeof createUser>>>
+    export type CreateUserMutationBody = CreateUserRequest
+    export type CreateUserMutationError = AxiosError<HTTPValidationError>
 
     /**
  * @summary Create
  */
-export const useCreateUsersCreatePost = <TError = AxiosError<HTTPValidationError>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createUsersCreatePost>>, TError,{data: CreateUserRequest}, TContext>, axios?: AxiosRequestConfig}
+export const useCreateUser = <TError = AxiosError<HTTPValidationError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createUser>>, TError,{data: CreateUserRequest}, TContext>, axios?: AxiosRequestConfig}
  ): UseMutationResult<
-        Awaited<ReturnType<typeof createUsersCreatePost>>,
+        Awaited<ReturnType<typeof createUser>>,
         TError,
         {data: CreateUserRequest},
         TContext
       > => {
 
-      const mutationOptions = getCreateUsersCreatePostMutationOptions(options);
+      const mutationOptions = getCreateUserMutationOptions(options);
 
       return useMutation(mutationOptions);
     }
