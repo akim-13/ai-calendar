@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../api";
 
 interface Achievement {
   achievementID: number;
@@ -71,7 +72,7 @@ const AchievementModal: React.FC<AchievementModalProps> = ({
 
   const fetchAchievements = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/check_achievements');
+      const response = await axios.get(`${API_BASE_URL}/check_achievements`);
       setAchievements(response.data);
     } catch (error) {
       console.error("Error fetching achievements:", error);
@@ -81,7 +82,7 @@ const AchievementModal: React.FC<AchievementModalProps> = ({
   const fetchUserPoints = async () => {
     try {
       console.log("Fetching points for user:", username);
-      const response = await axios.get(`http://localhost:8000/get_user_points/${username}`);
+      const response = await axios.get(`${API_BASE_URL}/get_user_points/${username}`);
       setUserPoints(response.data.points);
     } catch (error) {
       console.error("Error fetching user points:", error);

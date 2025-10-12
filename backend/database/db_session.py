@@ -5,9 +5,7 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from backend.database.constants import DATABASE_URL
 
-# Second arg is for sqlite specifically - FastAPI uses multithreading by default.
-# This ensures other threads can access the connection.
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+engine = create_engine(DATABASE_URL)
 
 # Session factory: calling SessionLocal() gives you a new database session
 # bound to the engine. Each session manages queries, transactions, and commits.
@@ -16,7 +14,7 @@ SessionLocal = sessionmaker(bind=engine)
 
 def get_db() -> Generator[Session, None, None]:
     """
-    Provide a database session and ensure it is closed after use.
+    Provide a database session and automatically commit/rollback and close it.
     """
     db = SessionLocal()
     try:
