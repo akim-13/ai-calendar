@@ -12,7 +12,9 @@ import {
 } from "./TaskEventInputs";
 import axios from "axios";
 
-const HOST="http://localhost:8000"
+import { API_BASE_URL } from "../api";
+
+const HOST = API_BASE_URL
 
 // interface ExtendedProps {
 //   description: string;

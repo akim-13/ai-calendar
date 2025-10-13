@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from "axios"; // Make sure axios is imported
+import { API_BASE_URL } from "../api";
 
 interface TaskCardProps {
   taskID: number,
@@ -41,7 +42,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
       console.log(title)
       console.log(taskID)
       try{
-        await axios.put<{ message: string }>(`http://127.0.0.1:8000/complete_task/${taskID}`);
+        await axios.put<{ message: string }>(`${API_BASE_URL}/complete_task/${taskID}`);
       }
       catch (error) {
       console.error("Error fetching tasks:", error);
