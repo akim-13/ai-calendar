@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { API_BASE_URL } from "../api";
 
 interface SettingsModalProps {
   open: boolean;
@@ -23,7 +24,7 @@ export default function SettingsModal({ open, onClose }: SettingsModalProps) {
     // Handle calendar URL
     if (calendarUrl) {
       try {
-        const response = await fetch("http://localhost:8000/add_calendar/", {
+        const response = await fetch(`${API_BASE_URL}/add_calendar/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

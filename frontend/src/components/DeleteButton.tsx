@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../api";
 
 const DeleteButton: React.FC = () => {
   const [response, setResponse] = useState<string | null>(null);
@@ -7,7 +8,7 @@ const DeleteButton: React.FC = () => {
   const sendRequest = async () => {
     try {
       //in quotes add the url to the request, for delete, the ending means /delete/(task id)
-      const res = await axios.delete<{ message: string }>("http://127.0.0.1:8000/delete/1");
+      const res = await axios.delete<{ message: string }>(`${API_BASE_URL}/delete/1`);
       setResponse(res.data.message);
     } catch (error) {
       console.error("Error sending request:", error);

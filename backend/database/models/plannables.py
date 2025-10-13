@@ -59,6 +59,10 @@ class Plannable(ORMBase, TimestampMixin):
         String(),
         nullable=False,
     )
+    priority: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False,
+    )
     is_completed: Mapped[bool] = mapped_column(
         Boolean,
         nullable=True,  # True for standalone Events.
@@ -110,11 +114,6 @@ class Task(Plannable):
     )
     duration: Mapped[timedelta] = mapped_column(
         Interval,
-        nullable=False,
-    )
-    # TODO: Move to Plannable?
-    priority: Mapped[int] = mapped_column(
-        Integer,
         nullable=False,
     )
 
