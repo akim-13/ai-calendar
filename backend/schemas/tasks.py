@@ -1,65 +1,49 @@
 from datetime import datetime
+from enum import IntEnum
+from pydantic import BaseModel, Field
 
-from fastapi import Form
-from pydantic import BaseModel
+
+class TaskPriority(IntEnum):
+    """Integer-backed priority levels for tasks."""
+    LOW = 0
+    MID = 1
+    HIGH = 2
 
 
-class TaskBaseForm(BaseModel):
+class TaskCreateRequest(BaseModel):
     """
-    Base form model with shared fields for creating/updating a task.
+    Request schema for creating a new task.
     """
+    title: str = Field(..., description="Title of the task")
+    description: str = Field(..., description="Detailed description of the task")
+    duration: int = Field(..., description="Duration of the task in hours")
+    priority: TaskPriority = Field(..., description="Priority level of the task")
+    deadline: datetime = Field(..., description="Deadline for the task")
+    username: str = Field(..., description="Username of the task owner")
 
+
+class TaskUpdateRequest(BaseModel):
+    """
+    Request schema for updating an existing task.
+    """
+    title: str = Field(..., description="Updated title of the task")
+    description: str = Field(..., description="Updated description of the task")
+    duration: int = Field(..., description="Updated duration of the task in hours")
+    priority: TaskPriority = Field(..., description="Updated priority level")
+    deadline: datetime = Field(..., description="Updated deadline for the task")
+
+
+class TaskResponse(BaseModel):
+    """
+    Schema for returning task data.
+    """
+    id: int
     title: str
     description: str
     duration: int
-    priority: int
+    priority: TaskPriority
     deadline: datetime
+    username: str
 
-    @classmethod
-    def as_form(
-        cls,
-        title: str = Form(...),
-        description: str = Form(...),
-        duration: int = Form(...),
-        priority: int = Form(...),
-        deadline: datetime = Form(...),
-    ) -> "TaskBaseForm":
-        """Create a TaskBaseForm instance from form data."""
-        return cls(
-            title=title,
-            description=description,
-            duration=duration,
-            priority=priority,
-            deadline=deadline,
-        )
-
-
-class TaskCreateForm(TaskBaseForm):
-    """
-    Form model for creating a new task.
-    """
-
-    # Inherits `as_form` directly.
-
-
-class TaskUpdateForm(TaskBaseForm):
-    """
-    Form model for updating an existing task.
-    """
-
-    editID: int
-
-    @classmethod
-    def as_form(
-        cls,
-        title: str = Form(...),
-        description: str = Form(...),
-        duration: int = Form(...),
-        priority: int = Form(...),
-        deadline: datetime = Form(...),
-        editID: int = Form(...),
-    ) -> "TaskUpdateForm":
-        """Create a TaskUpdateForm instance from form data."""
-        # Reuse TaskBaseForm’s constructor by unpacking.
-        base = TaskBaseForm.as_form(title, description, duration, priority, deadline)
-        return cls(editID=editID, **base.model_dump())
+    class Config:
+        orm_mode = True
