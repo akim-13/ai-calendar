@@ -1,91 +1,42 @@
-from datetime import datetime
-
+from typing import List
 from sqlalchemy.orm import Session
+from sqlalchemy import and_
 
 from backend.database import Event, Task, User
-from backend.misc.config import DATETIME_FORMAT
 
 
-def get_events(username: str, interval: tuple[datetime, datetime], db: Session) -> dict:
-    """Return all events for the given user that fall within the provided time interval."""
-    raise NotImplementedError
+class EventNotFoundError(Exception):
+    """Raised when an event or related entity cannot be found."""
 
+def list_events_from_task(db: Session, task_id: int) -> List[Event]:
+    """Return all events linked to a given task."""
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if not task:
+        raise EventNotFoundError(f"Task with ID {task_id} not found.")
+
+    events = db.query(Event).filter(Event.task_id == task_id).all()
+    return events
+
+def list_events_from_user(db: Session, username: str) -> List[Event]:
+    """Return all events belonging to a given user."""
     user = db.query(User).filter(User.username == username).first()
-    if user is None:
-        return {"events": []}
+    if not user:
+        raise EventNotFoundError(f"User '{username}' not found.")
 
-    user_events = user.events
-    events = [event for event in user_events if interval[0] < event.start < interval[1]]
-    events = events
-    return None
+    # Find all events for this user's tasks
+    events = (
+        db.query(Event)
+        .join(Task, Event.task_id == Task.id)
+        .filter(Task.username == username)
+        .all()
+    )
+    return events
 
+def delete_events_from_task(db: Session, task_id: int) -> None:
+    """Delete all events associated with a given task ID."""
+    events = db.query(Event).filter(Event.task_id == task_id).all()
+    if not events:
+        raise EventNotFoundError(f"No events found for task ID {task_id}.")
 
-def get_all_events(username: str, db: Session) -> dict:
-    """Return all events for the given user in JSON format with start/end as strings."""
-    raise NotImplementedError
-
-    user = db.query(User).filter(User.username == username).first()
-    if user is None:
-        return {"events": []}
-
-    event_models: list[Event] = user.events
-    events = [
-        {
-            "start": e.start.strftime(DATETIME_FORMAT),
-            "end": e.end.strftime(DATETIME_FORMAT),
-            "eventID": e.eventID,
-            "title": e.task.title,
-        }
-        for e in event_models
-    ]
-
-    return {"events": events}
-
-
-def edit_task_event(eventID: int, new_start: datetime, new_end: datetime, db: Session) -> dict:
-    """Update the start and end time of a task event."""
-    raise NotImplementedError
-
-    event = db.query(Event).filter(Event.id == eventID).first()
-    if event is None:
-        return {"success": False, "message": "Event not found"}
-
-    event.start = new_start
-    event.end = new_end
-    db.commit()
-
-    return {"success": True}
-
-
-def get_events_from_task(taskID: int, db: Session) -> dict:
-    """Return all events belonging to a given task."""
-    raise NotImplementedError
-
-    tasks = db.query(Task).filter(Task.id == taskID).first()
-    if tasks is None:
-        return {"events": []}
-
-
-def delete_events_from_task(taskID: int, db: Session) -> dict:
-    """Delete all events associated with the given task ID."""
-    raise NotImplementedError
-
-    events = db.query(Event).filter(Event.id == taskID)
-    events.delete()
-    db.commit()
-
-    return {"success": True}
-
-
-def delete_task_event(eventID: int, db: Session) -> dict:
-    """Delete a specific event by its ID."""
-    raise NotImplementedError
-
-    event = db.query(Event).filter(Event.id == eventID).first()
-    if event is None:
-        return {"success": False, "message": "Event not found"}
-
-    db.delete(event)
-    db.commit()
-
-    return {"success": True}
+    for e in events:
+        db.delete(e)
