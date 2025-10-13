@@ -13,8 +13,9 @@ class DeleteUserRequest(_UsernameRequest):
 class GetUserRequest(_UsernameRequest):
     pass
 
-class UpdateUserLastLoginRequest(_UsernameRequest):
-    last_login: datetime
-    
-class UpdateUserActivityRequest(_UsernameRequest):
-    is_active: bool
+
+class UpdateUserRequest(_UsernameRequest):
+    last_login: datetime | None = None
+    is_active: bool | None = None
+    timezone: str | None = None
+    theme: str | None = None

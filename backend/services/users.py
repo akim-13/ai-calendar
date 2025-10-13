@@ -1,8 +1,7 @@
 from sqlalchemy.orm import Session
 from backend.database import User
 from sqlalchemy.exc import IntegrityError
-from schemas import UserSchema
-from datetime import datetime
+from backend.database.models.user import UserSettings
 
 
 def create_user(db: Session, username: str) -> User | None:
@@ -22,28 +21,28 @@ def get_user(db: Session, username: str) -> User | None:
     
     return user
 
-# region User update services
-
-def update_user_activity(db: Session, username: str, is_active: bool) -> datetime | None:
-    """Update a user account. Returns None if username doesn't exist"""
-    user = db.query(User).filter(User.username == username).first()
-    
+def update_user(db, request):
+    """Update user fields. Returns None if user not found, else updated user"""
+    user = db.query(User).filter(User.username == request.username).first()
     if user is None:
         return None
-    
-    user.is_active = is_active
-    
-    
-def update_user_last_login(db: Session, username: str, last_login: datetime) -> datetime | None:
-    """Update a user account. Returns None is username doesn't exist"""
-    user = db.query(User).filter(User.username == username).first()
-    
-    if user is None:
-        return None
-    
-    user.last_login = last_login
+    if request.last_login is not None:
+        user.last_login = request.last_login
+    if request.is_active is not None:
+        user.is_active = request.is_active
 
-# endregion
+    if request.timezone is not None :
+        if user.settings is None:
+            user.settings = UserSettings(username=user.username, timezone=request.timezone, theme=request.theme or "light")
+        else:
+            user.settings.timezone = request.timezone
+    if request.theme is not None:
+        if user.settings is None:
+            user.settings = UserSettings(username=user.username, timezone=request.timezone or "GMT", theme=request.theme)
+        else:
+            user.settings.theme = request.theme
+    db.flush()
+    return user
 
 
 def delete_user(db: Session, username: str) -> User | None:
