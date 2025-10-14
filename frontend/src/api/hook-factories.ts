@@ -1,4 +1,4 @@
-import { normaliseApiError } from "@/api/errors/normaliseApiError"
+import { normaliseApiError } from "@/api/errors"
 
 // TODO: Yeah idk whats going on. Figure out and test.
 
