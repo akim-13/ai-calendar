@@ -19,21 +19,22 @@ export interface ApiError {
 export function normaliseApiError(error: unknown): ApiError {
   // Case 1: It's an AxiosError (most common)
   if (axios.isAxiosError(error)) {
-    const res: AxiosResponse | undefined = error.response
+    const response = error.response
     const cfg = error.config
 
     return {
-      message:
-        res?.data?.detail ||
-        res?.statusText ||
-        error.message ||
-        "Unknown error",
-      status: res?.status ?? null,
-      method: cfg?.method?.toUpperCase(),
-      url: cfg?.url,
-      code: error.code,
-      details: res?.data,
-      raw: error, // preserve everything
+        message:
+            response?.data?.detail ||
+            response?.statusText ||
+            error.message ||
+            "Unknown error",
+        status: response?.status ?? null,
+        raw: error,
+        // Return right hand side only if it exists, otherwise spread `undefined` to omit the field.
+        ...(error?.code && { code: error.code }),
+        ...(cfg?.method && { method: cfg.method.toUpperCase() }),
+        ...(cfg?.url && { url: cfg.url }),
+        ...(response?.data && { details: response.data }),
     }
   }
 
