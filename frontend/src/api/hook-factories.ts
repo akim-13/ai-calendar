@@ -1,51 +1,57 @@
+import type {
+  UseMutationResult,
+  UseQueryResult,
+} from "@tanstack/react-query"
 import { normaliseApiError } from "@/api/errors"
 
-// TODO: Yeah idk whats going on. Figure out and test.
-
-/** Shape of an Orval-generated mutation hook (React Query mutation) */
-export interface GeneratedMutationHook<RequestBody, ResponseData> {
-  mutateAsync: (args: { data: RequestBody }) => Promise<{ data: ResponseData }>
-  data?: { data: ResponseData }
-  error?: unknown
+// App-facing interface returned by mutation factories
+export interface MappedMutationHook<RequestBody, Model> {
+  mutateMapped: (request: RequestBody) => Promise<Model>
+  model: Model | null
+  error: ReturnType<typeof normaliseApiError> | null
   isPending: boolean
   isSuccess: boolean
+  isError: boolean
 }
 
-/** Shape of an Orval-generated query hook (React Query query) */
-export interface GeneratedQueryHook<ResponseData> {
-  data?: { data: ResponseData }
-  error?: unknown
+// App-facing interface returned by query factories
+export interface MappedQueryHook<Model> {
+  data: Model | null
+  error: ReturnType<typeof normaliseApiError> | null
   isLoading: boolean
   isError: boolean
 }
 
-
-/**
- * Factory that creates a mapped, normalised mutation hook
- * from an Orval-generated mutation hook.
- */
+// Factory for wrapping Orval-generated mutation hooks
 export function createMappedMutationHook<
   RequestBody,
-  ResponseData,
+  ResponseDto,
   Model
 >(
-  useGeneratedHook: () => GeneratedMutationHook<RequestBody, ResponseData>,
-  mapper: (data: ResponseData) => Model
-) {
+  useGeneratedHook: () => UseMutationResult<ResponseDto, unknown, RequestBody, unknown>,
+  mapper: (data: ResponseDto) => Model
+): () => MappedMutationHook<RequestBody, Model> {
   return function useMappedMutation() {
-    const { mutateAsync, data, error, isPending, isSuccess, ...rest } =
-      useGeneratedHook()
+    const {
+      mutateAsync,
+      data,
+      error,
+      isPending,
+      isSuccess,
+      isError: _ignoredIsError,
+      ...rest
+    } = useGeneratedHook()
 
     async function mutateMapped(request: RequestBody): Promise<Model> {
       try {
-        const response = await mutateAsync({ data: request })
-        return mapper(response.data)
+        const response = await mutateAsync(request)
+        return mapper(response)
       } catch (err) {
         throw normaliseApiError(err)
       }
     }
 
-    const model = data ? mapper(data.data) : null
+    const model = data ? mapper(data) : null
     const normalisedError = error ? normaliseApiError(error) : null
 
     return {
@@ -60,19 +66,15 @@ export function createMappedMutationHook<
   }
 }
 
-
-/**
- * Factory that creates a mapped, normalised query hook
- * from an Orval-generated query hook.
- */
-export function createMappedQueryHook<ResponseData, Model>(
-  useGeneratedQuery: (...args: any[]) => GeneratedQueryHook<ResponseData>,
-  mapper: (data: ResponseData) => Model
-) {
-  return function useMappedQuery(...args: any[]) {
+// Factory for wrapping Orval-generated query hooks
+export function createMappedQueryHook<ResponseDto, Model>(
+  useGeneratedQuery: (...args: any[]) => UseQueryResult<ResponseDto, unknown>,
+  mapper: (data: ResponseDto) => Model
+): (...args: any[]) => MappedQueryHook<Model> {
+  return function useMappedQuery(...args) {
     const { data, error, ...rest } = useGeneratedQuery(...args)
 
-    const model = data ? mapper(data.data) : null
+    const model = data ? mapper(data) : null
     const normalisedError = error ? normaliseApiError(error) : null
 
     return {
