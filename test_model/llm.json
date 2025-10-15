@@ -2,7 +2,7 @@
   "title": "math coursework",
   "tag": "coursework",
   "priority": 1,
-  "task_length_minutes": 1200,
+  "task_length_hours": 10,
   "max_allowed_hours_per_day": 2,
   "spread": "evenly",
   "day_period_start": "", 
