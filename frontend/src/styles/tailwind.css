@@ -1,4 +1,4 @@
-// To remove warnings in vscode install PostCSS extension.
+/* To remove warnings in vscode install PostCSS extension. */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
