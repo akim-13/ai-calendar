@@ -1,30 +1,18 @@
 from typing import Any, Dict
 
-from sqlalchemy import desc
 from sqlalchemy.orm import Session
 
 from backend.database import Task
-from backend.tools.jsonify import convertToJson
 
 
 def get_user_tasks(username: str, db: Session) -> None:
     """Return all tasks for a user as JSON, or an empty list if none exist."""
     raise NotImplementedError
 
-    tasks = db.query(Task).filter(Task.username == username).all()
-
-    return {"tasks": [convertToJson(task) for task in tasks]} if tasks else {"tasks": []}
-
 
 def get_latest_user_task(username: str, db: Session) -> None:
     """Return the most recent task for a user, or None if none exist."""
     raise NotImplementedError
-
-    latest_task = (
-        db.query(Task).filter(Task.username == username).order_by(desc(Task.taskID)).first()
-    )
-
-    return {"latest_task": convertToJson(latest_task)} if latest_task else {"latest_task": None}
 
 
 def edit_task(taskID: int, task_properties: Dict[str, Any], db: Session) -> None:
