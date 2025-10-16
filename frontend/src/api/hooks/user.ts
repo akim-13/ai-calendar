@@ -3,9 +3,9 @@ import {
     HookFactory,
     UserResponse,
     CreateUserRequest,
-    useCreateUser,
+    useCreateUser as useCreateUserGenerated,
 } from "@/api/internal-utils"
-import { User } from "@/api/models"
+import { User } from "@/core/entities/user"
 
 //TODO: Test query hooks.
 
@@ -22,23 +22,24 @@ const createUserMapper: MutationMapper<
         }
     },
     fromResponse(dto) {
-        return {
+        return new User({
             id: dto.id,
             username: dto.username,
             isActive: dto.is_active,
-        }
+        })
     },
 }
 
 // Wrap Orval mutation hook.
-export const useCreateUserMutationExplicit = HookFactory.createMappedMutationHook(
-    useCreateUser,
+export const useCreateUserExplicit = HookFactory.createMappedMutationHook(
+    useCreateUserGenerated,
     createUserMapper
 )
 
 // Actual usage:
-export const useCreateUserMutation = HookFactory.createMappedMutationHook(
-    useCreateUser,
+// Naming: use<Operation><Entity>, where Operation is a verb and Entity is a noun.
+export const useCreateUser = HookFactory.createMappedMutationHook(
+    useCreateUserGenerated,
     {
         // "Frontend input to Backend request"
         toRequest(inp: { username: string }): CreateUserRequest {
