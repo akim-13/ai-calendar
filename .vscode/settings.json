@@ -1,15 +1,7 @@
 {
-    "cSpell.words": [
-        "customisation",
-        "daygrid",
-        "dotenv",
-        "fullcalendar",
-        "gamification",
-        "recognisable",
-        "Synchronised",
-        "texttt",
-        "timegrid"
-    ],
     "python.analysis.typeCheckingMode": "standard",
-    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python"
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false
 }

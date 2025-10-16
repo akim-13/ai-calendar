@@ -9,16 +9,21 @@ import {
   useQuery
 } from '@tanstack/react-query';
 import type {
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
   MutationFunction,
+  QueryClient,
   QueryFunction,
   QueryKey,
+  UndefinedInitialDataOptions,
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
   UseQueryResult
 } from '@tanstack/react-query';
 
-import * as axios from 'axios';
+import axios from 'axios';
 import type {
   AxiosError,
   AxiosRequestConfig,
@@ -66,14 +71,14 @@ export interface ValidationError {
 
 /**
  * Create a new user account.
- * @summary Create
+ * @summary Create User Endpoint
  */
 export const createUser = (
     createUserRequest: CreateUserRequest, options?: AxiosRequestConfig
  ): Promise<AxiosResponse<UserResponse>> => {
 
 
-    return axios.default.post(
+    return axios.post(
       `/users/create`,
       createUserRequest,options
     );
@@ -111,11 +116,11 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
     export type CreateUserMutationError = AxiosError<HTTPValidationError>
 
     /**
- * @summary Create
+ * @summary Create User Endpoint
  */
 export const useCreateUser = <TError = AxiosError<HTTPValidationError>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createUser>>, TError,{data: CreateUserRequest}, TContext>, axios?: AxiosRequestConfig}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createUser>>,
         TError,
         {data: CreateUserRequest},
@@ -124,7 +129,7 @@ export const useCreateUser = <TError = AxiosError<HTTPValidationError>,
 
       const mutationOptions = getCreateUserMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
 
 /**
@@ -142,7 +147,7 @@ formUrlEncoded.append(`duration`, bodyCreateTaskTasksPost.duration.toString())
 formUrlEncoded.append(`priority`, bodyCreateTaskTasksPost.priority.toString())
 formUrlEncoded.append(`deadline`, bodyCreateTaskTasksPost.deadline)
 
-    return axios.default.post(
+    return axios.post(
       `/tasks/`,
       formUrlEncoded,options
     );
@@ -184,7 +189,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  */
 export const useCreateTaskTasksPost = <TError = AxiosError<HTTPValidationError>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTaskTasksPost>>, TError,{data: BodyCreateTaskTasksPost}, TContext>, axios?: AxiosRequestConfig}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createTaskTasksPost>>,
         TError,
         {data: BodyCreateTaskTasksPost},
@@ -193,7 +198,7 @@ export const useCreateTaskTasksPost = <TError = AxiosError<HTTPValidationError>,
 
       const mutationOptions = getCreateTaskTasksPostMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
 
 /**
@@ -213,7 +218,7 @@ formUrlEncoded.append(`priority`, bodyUpdateTaskTasksTaskIDPut.priority.toString
 formUrlEncoded.append(`deadline`, bodyUpdateTaskTasksTaskIDPut.deadline)
 formUrlEncoded.append(`editID`, bodyUpdateTaskTasksTaskIDPut.editID.toString())
 
-    return axios.default.put(
+    return axios.put(
       `/tasks/${taskID}`,
       formUrlEncoded,options
     );
@@ -255,7 +260,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  */
 export const useUpdateTaskTasksTaskIDPut = <TError = AxiosError<HTTPValidationError>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTaskTasksTaskIDPut>>, TError,{taskID: number;data: BodyUpdateTaskTasksTaskIDPut}, TContext>, axios?: AxiosRequestConfig}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateTaskTasksTaskIDPut>>,
         TError,
         {taskID: number;data: BodyUpdateTaskTasksTaskIDPut},
@@ -264,7 +269,7 @@ export const useUpdateTaskTasksTaskIDPut = <TError = AxiosError<HTTPValidationEr
 
       const mutationOptions = getUpdateTaskTasksTaskIDPutMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
 
 /**
@@ -276,7 +281,7 @@ export const deleteTaskTasksTaskIDDelete = (
  ): Promise<AxiosResponse<unknown>> => {
 
 
-    return axios.default.delete(
+    return axios.delete(
       `/tasks/${taskID}`,options
     );
   }
@@ -317,7 +322,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  */
 export const useDeleteTaskTasksTaskIDDelete = <TError = AxiosError<HTTPValidationError>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTaskTasksTaskIDDelete>>, TError,{taskID: number}, TContext>, axios?: AxiosRequestConfig}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteTaskTasksTaskIDDelete>>,
         TError,
         {taskID: number},
@@ -326,7 +331,7 @@ export const useDeleteTaskTasksTaskIDDelete = <TError = AxiosError<HTTPValidatio
 
       const mutationOptions = getDeleteTaskTasksTaskIDDeleteMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }
 
 /**
@@ -338,7 +343,7 @@ export const listUserTasksTasksUserUsernameGet = (
  ): Promise<AxiosResponse<unknown>> => {
 
 
-    return axios.default.get(
+    return axios.get(
       `/tasks/user/${username}`,options
     );
   }
@@ -353,7 +358,7 @@ export const getListUserTasksTasksUserUsernameGetQueryKey = (username?: string,)
     }
 
 
-export const getListUserTasksTasksUserUsernameGetQueryOptions = <TData = Awaited<ReturnType<typeof listUserTasksTasksUserUsernameGet>>, TError = AxiosError<HTTPValidationError>>(username: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listUserTasksTasksUserUsernameGet>>, TError, TData>, axios?: AxiosRequestConfig}
+export const getListUserTasksTasksUserUsernameGetQueryOptions = <TData = Awaited<ReturnType<typeof listUserTasksTasksUserUsernameGet>>, TError = AxiosError<HTTPValidationError>>(username: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUserTasksTasksUserUsernameGet>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
 
 const {query: queryOptions, axios: axiosOptions} = options ?? {};
@@ -368,25 +373,49 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 
 
 
-   return  { queryKey, queryFn, enabled: !!(username), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listUserTasksTasksUserUsernameGet>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(username), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listUserTasksTasksUserUsernameGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListUserTasksTasksUserUsernameGetQueryResult = NonNullable<Awaited<ReturnType<typeof listUserTasksTasksUserUsernameGet>>>
 export type ListUserTasksTasksUserUsernameGetQueryError = AxiosError<HTTPValidationError>
 
 
+export function useListUserTasksTasksUserUsernameGet<TData = Awaited<ReturnType<typeof listUserTasksTasksUserUsernameGet>>, TError = AxiosError<HTTPValidationError>>(
+ username: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUserTasksTasksUserUsernameGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listUserTasksTasksUserUsernameGet>>,
+          TError,
+          Awaited<ReturnType<typeof listUserTasksTasksUserUsernameGet>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListUserTasksTasksUserUsernameGet<TData = Awaited<ReturnType<typeof listUserTasksTasksUserUsernameGet>>, TError = AxiosError<HTTPValidationError>>(
+ username: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUserTasksTasksUserUsernameGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listUserTasksTasksUserUsernameGet>>,
+          TError,
+          Awaited<ReturnType<typeof listUserTasksTasksUserUsernameGet>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListUserTasksTasksUserUsernameGet<TData = Awaited<ReturnType<typeof listUserTasksTasksUserUsernameGet>>, TError = AxiosError<HTTPValidationError>>(
+ username: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUserTasksTasksUserUsernameGet>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary List User Tasks
  */
 
 export function useListUserTasksTasksUserUsernameGet<TData = Awaited<ReturnType<typeof listUserTasksTasksUserUsernameGet>>, TError = AxiosError<HTTPValidationError>>(
- username: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listUserTasksTasksUserUsernameGet>>, TError, TData>, axios?: AxiosRequestConfig}
-
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+ username: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUserTasksTasksUserUsernameGet>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListUserTasksTasksUserUsernameGetQueryOptions(username,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -405,7 +434,7 @@ export const getLatestUserTaskTasksUserUsernameLatestGet = (
  ): Promise<AxiosResponse<unknown>> => {
 
 
-    return axios.default.get(
+    return axios.get(
       `/tasks/user/${username}/latest`,options
     );
   }
@@ -420,7 +449,7 @@ export const getGetLatestUserTaskTasksUserUsernameLatestGetQueryKey = (username?
     }
 
 
-export const getGetLatestUserTaskTasksUserUsernameLatestGetQueryOptions = <TData = Awaited<ReturnType<typeof getLatestUserTaskTasksUserUsernameLatestGet>>, TError = AxiosError<HTTPValidationError>>(username: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getLatestUserTaskTasksUserUsernameLatestGet>>, TError, TData>, axios?: AxiosRequestConfig}
+export const getGetLatestUserTaskTasksUserUsernameLatestGetQueryOptions = <TData = Awaited<ReturnType<typeof getLatestUserTaskTasksUserUsernameLatestGet>>, TError = AxiosError<HTTPValidationError>>(username: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getLatestUserTaskTasksUserUsernameLatestGet>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
 
 const {query: queryOptions, axios: axiosOptions} = options ?? {};
@@ -435,25 +464,49 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 
 
 
-   return  { queryKey, queryFn, enabled: !!(username), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getLatestUserTaskTasksUserUsernameLatestGet>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(username), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getLatestUserTaskTasksUserUsernameLatestGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetLatestUserTaskTasksUserUsernameLatestGetQueryResult = NonNullable<Awaited<ReturnType<typeof getLatestUserTaskTasksUserUsernameLatestGet>>>
 export type GetLatestUserTaskTasksUserUsernameLatestGetQueryError = AxiosError<HTTPValidationError>
 
 
+export function useGetLatestUserTaskTasksUserUsernameLatestGet<TData = Awaited<ReturnType<typeof getLatestUserTaskTasksUserUsernameLatestGet>>, TError = AxiosError<HTTPValidationError>>(
+ username: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getLatestUserTaskTasksUserUsernameLatestGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getLatestUserTaskTasksUserUsernameLatestGet>>,
+          TError,
+          Awaited<ReturnType<typeof getLatestUserTaskTasksUserUsernameLatestGet>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetLatestUserTaskTasksUserUsernameLatestGet<TData = Awaited<ReturnType<typeof getLatestUserTaskTasksUserUsernameLatestGet>>, TError = AxiosError<HTTPValidationError>>(
+ username: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getLatestUserTaskTasksUserUsernameLatestGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getLatestUserTaskTasksUserUsernameLatestGet>>,
+          TError,
+          Awaited<ReturnType<typeof getLatestUserTaskTasksUserUsernameLatestGet>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetLatestUserTaskTasksUserUsernameLatestGet<TData = Awaited<ReturnType<typeof getLatestUserTaskTasksUserUsernameLatestGet>>, TError = AxiosError<HTTPValidationError>>(
+ username: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getLatestUserTaskTasksUserUsernameLatestGet>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get Latest User Task
  */
 
 export function useGetLatestUserTaskTasksUserUsernameLatestGet<TData = Awaited<ReturnType<typeof getLatestUserTaskTasksUserUsernameLatestGet>>, TError = AxiosError<HTTPValidationError>>(
- username: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getLatestUserTaskTasksUserUsernameLatestGet>>, TError, TData>, axios?: AxiosRequestConfig}
-
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+ username: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getLatestUserTaskTasksUserUsernameLatestGet>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getGetLatestUserTaskTasksUserUsernameLatestGetQueryOptions(username,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -472,7 +525,7 @@ export const listEventsFromTaskEventsListFromTaskTaskIdGet = (
  ): Promise<AxiosResponse<unknown>> => {
 
 
-    return axios.default.get(
+    return axios.get(
       `/events/list_from_task/${taskId}`,options
     );
   }
@@ -487,7 +540,7 @@ export const getListEventsFromTaskEventsListFromTaskTaskIdGetQueryKey = (taskId?
     }
 
 
-export const getListEventsFromTaskEventsListFromTaskTaskIdGetQueryOptions = <TData = Awaited<ReturnType<typeof listEventsFromTaskEventsListFromTaskTaskIdGet>>, TError = AxiosError<HTTPValidationError>>(taskId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listEventsFromTaskEventsListFromTaskTaskIdGet>>, TError, TData>, axios?: AxiosRequestConfig}
+export const getListEventsFromTaskEventsListFromTaskTaskIdGetQueryOptions = <TData = Awaited<ReturnType<typeof listEventsFromTaskEventsListFromTaskTaskIdGet>>, TError = AxiosError<HTTPValidationError>>(taskId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEventsFromTaskEventsListFromTaskTaskIdGet>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
 
 const {query: queryOptions, axios: axiosOptions} = options ?? {};
@@ -502,25 +555,49 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 
 
 
-   return  { queryKey, queryFn, enabled: !!(taskId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listEventsFromTaskEventsListFromTaskTaskIdGet>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(taskId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listEventsFromTaskEventsListFromTaskTaskIdGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListEventsFromTaskEventsListFromTaskTaskIdGetQueryResult = NonNullable<Awaited<ReturnType<typeof listEventsFromTaskEventsListFromTaskTaskIdGet>>>
 export type ListEventsFromTaskEventsListFromTaskTaskIdGetQueryError = AxiosError<HTTPValidationError>
 
 
+export function useListEventsFromTaskEventsListFromTaskTaskIdGet<TData = Awaited<ReturnType<typeof listEventsFromTaskEventsListFromTaskTaskIdGet>>, TError = AxiosError<HTTPValidationError>>(
+ taskId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEventsFromTaskEventsListFromTaskTaskIdGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listEventsFromTaskEventsListFromTaskTaskIdGet>>,
+          TError,
+          Awaited<ReturnType<typeof listEventsFromTaskEventsListFromTaskTaskIdGet>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListEventsFromTaskEventsListFromTaskTaskIdGet<TData = Awaited<ReturnType<typeof listEventsFromTaskEventsListFromTaskTaskIdGet>>, TError = AxiosError<HTTPValidationError>>(
+ taskId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEventsFromTaskEventsListFromTaskTaskIdGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listEventsFromTaskEventsListFromTaskTaskIdGet>>,
+          TError,
+          Awaited<ReturnType<typeof listEventsFromTaskEventsListFromTaskTaskIdGet>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListEventsFromTaskEventsListFromTaskTaskIdGet<TData = Awaited<ReturnType<typeof listEventsFromTaskEventsListFromTaskTaskIdGet>>, TError = AxiosError<HTTPValidationError>>(
+ taskId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEventsFromTaskEventsListFromTaskTaskIdGet>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary List Events From Task
  */
 
 export function useListEventsFromTaskEventsListFromTaskTaskIdGet<TData = Awaited<ReturnType<typeof listEventsFromTaskEventsListFromTaskTaskIdGet>>, TError = AxiosError<HTTPValidationError>>(
- taskId: number, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listEventsFromTaskEventsListFromTaskTaskIdGet>>, TError, TData>, axios?: AxiosRequestConfig}
-
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+ taskId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEventsFromTaskEventsListFromTaskTaskIdGet>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListEventsFromTaskEventsListFromTaskTaskIdGetQueryOptions(taskId,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -539,7 +616,7 @@ export const listEventsFromUserEventsListFromUserUsernameGet = (
  ): Promise<AxiosResponse<unknown>> => {
 
 
-    return axios.default.get(
+    return axios.get(
       `/events/list_from_user/${username}`,options
     );
   }
@@ -554,7 +631,7 @@ export const getListEventsFromUserEventsListFromUserUsernameGetQueryKey = (usern
     }
 
 
-export const getListEventsFromUserEventsListFromUserUsernameGetQueryOptions = <TData = Awaited<ReturnType<typeof listEventsFromUserEventsListFromUserUsernameGet>>, TError = AxiosError<HTTPValidationError>>(username: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listEventsFromUserEventsListFromUserUsernameGet>>, TError, TData>, axios?: AxiosRequestConfig}
+export const getListEventsFromUserEventsListFromUserUsernameGetQueryOptions = <TData = Awaited<ReturnType<typeof listEventsFromUserEventsListFromUserUsernameGet>>, TError = AxiosError<HTTPValidationError>>(username: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEventsFromUserEventsListFromUserUsernameGet>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
 
 const {query: queryOptions, axios: axiosOptions} = options ?? {};
@@ -569,25 +646,49 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 
 
 
-   return  { queryKey, queryFn, enabled: !!(username), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listEventsFromUserEventsListFromUserUsernameGet>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, enabled: !!(username), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listEventsFromUserEventsListFromUserUsernameGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ListEventsFromUserEventsListFromUserUsernameGetQueryResult = NonNullable<Awaited<ReturnType<typeof listEventsFromUserEventsListFromUserUsernameGet>>>
 export type ListEventsFromUserEventsListFromUserUsernameGetQueryError = AxiosError<HTTPValidationError>
 
 
+export function useListEventsFromUserEventsListFromUserUsernameGet<TData = Awaited<ReturnType<typeof listEventsFromUserEventsListFromUserUsernameGet>>, TError = AxiosError<HTTPValidationError>>(
+ username: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEventsFromUserEventsListFromUserUsernameGet>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listEventsFromUserEventsListFromUserUsernameGet>>,
+          TError,
+          Awaited<ReturnType<typeof listEventsFromUserEventsListFromUserUsernameGet>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListEventsFromUserEventsListFromUserUsernameGet<TData = Awaited<ReturnType<typeof listEventsFromUserEventsListFromUserUsernameGet>>, TError = AxiosError<HTTPValidationError>>(
+ username: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEventsFromUserEventsListFromUserUsernameGet>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listEventsFromUserEventsListFromUserUsernameGet>>,
+          TError,
+          Awaited<ReturnType<typeof listEventsFromUserEventsListFromUserUsernameGet>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListEventsFromUserEventsListFromUserUsernameGet<TData = Awaited<ReturnType<typeof listEventsFromUserEventsListFromUserUsernameGet>>, TError = AxiosError<HTTPValidationError>>(
+ username: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEventsFromUserEventsListFromUserUsernameGet>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary List Events From User
  */
 
 export function useListEventsFromUserEventsListFromUserUsernameGet<TData = Awaited<ReturnType<typeof listEventsFromUserEventsListFromUserUsernameGet>>, TError = AxiosError<HTTPValidationError>>(
- username: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listEventsFromUserEventsListFromUserUsernameGet>>, TError, TData>, axios?: AxiosRequestConfig}
-
- ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+ username: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEventsFromUserEventsListFromUserUsernameGet>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getListEventsFromUserEventsListFromUserUsernameGetQueryOptions(username,options)
 
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   query.queryKey = queryOptions.queryKey ;
 
@@ -606,7 +707,7 @@ export const deleteEventsFromTaskEventsDeleteAllFromTaskTaskIdDelete = (
  ): Promise<AxiosResponse<unknown>> => {
 
 
-    return axios.default.delete(
+    return axios.delete(
       `/events/delete_all_from_task/${taskId}`,options
     );
   }
@@ -647,7 +748,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  */
 export const useDeleteEventsFromTaskEventsDeleteAllFromTaskTaskIdDelete = <TError = AxiosError<HTTPValidationError>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteEventsFromTaskEventsDeleteAllFromTaskTaskIdDelete>>, TError,{taskId: number}, TContext>, axios?: AxiosRequestConfig}
- ): UseMutationResult<
+ , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteEventsFromTaskEventsDeleteAllFromTaskTaskIdDelete>>,
         TError,
         {taskId: number},
@@ -656,5 +757,5 @@ export const useDeleteEventsFromTaskEventsDeleteAllFromTaskTaskIdDelete = <TErro
 
       const mutationOptions = getDeleteEventsFromTaskEventsDeleteAllFromTaskTaskIdDeleteMutationOptions(options);
 
-      return useMutation(mutationOptions);
+      return useMutation(mutationOptions, queryClient);
     }

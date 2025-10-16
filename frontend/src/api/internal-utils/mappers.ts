@@ -4,13 +4,13 @@ export interface MutationMapper<
     BackendResponse,
     FrontendResponse,
 > {
-    toRequest(input: FrontendRequest): BackendRequest
-    fromResponse(dto: BackendResponse): FrontendResponse
+    toRequest(inp: FrontendRequest): BackendRequest
+    fromResponse(out: BackendResponse): FrontendResponse
 }
 
 export interface QueryMapper<
     BackendResponse,
     FrontendResponse
 > {
-    fromResponse(dto: BackendResponse): FrontendResponse
+    fromResponse(out: BackendResponse): FrontendResponse
 }
