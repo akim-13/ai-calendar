@@ -31,14 +31,14 @@ const createUserMapper: MutationMapper<
 }
 
 // Wrap Orval mutation hook.
-export const useCreateUserExplicit = HookFactory.createMappedMutationHook(
+// Naming: use<Operation><Entity>, where Operation is a verb and Entity is a noun.
+export const useCreateUser = HookFactory.createMappedMutationHook(
     useCreateUserGenerated,
     createUserMapper
 )
 
 // Actual usage:
-// Naming: use<Operation><Entity>, where Operation is a verb and Entity is a noun.
-export const useCreateUser = HookFactory.createMappedMutationHook(
+export const useCreateUserShort = HookFactory.createMappedMutationHook(
     useCreateUserGenerated,
     {
         // "Frontend input to Backend request"
@@ -50,17 +50,17 @@ export const useCreateUser = HookFactory.createMappedMutationHook(
         },
         // "from Backend response to Frontend output (model)"
         fromResponse(out: UserResponse): User {
-            return {
+            return new User({
                 id: out.id,
                 username: out.username,
                 isActive: out.is_active,
-            }
+            })
         },
     }
 )
 
 // Example usage.
-const { mutate, ...rest } = useCreateUserMutation()
+const { mutate, ...rest } = useCreateUser()
 
 async function handleSubmit() {
     try {

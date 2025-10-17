@@ -26,4 +26,12 @@ export class User {
             isActive: true,
         })
     }
+
+    deactivate(): User {
+        return new User({
+            id: this.id,
+            username: this.username,
+            isActive: false,
+        })
+    }
 }
