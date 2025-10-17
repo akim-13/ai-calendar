@@ -113,12 +113,14 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row md:h-screen w-full">
+    <>
       {/* Show SignIn component if not signed in */}
       {!isSignedIn ? (
-        <SignIn onSignIn={handleSignIn} />
+        <div className="min-h-screen w-full flex items-center justify-center">
+          <SignIn onSignIn={handleSignIn} />
+        </div>
       ) : (
-        <>
+        <div className="flex flex-col md:flex-row md:h-screen w-full">
           {/* Task list sidebar (stacks on mobile) */}
           <div className="flex-none w-full md:w-[300px] p-4 md:border-r border-gray-300 order-2 md:order-1">
             {tasks.length > 0 ? (
@@ -185,11 +187,10 @@ const App: React.FC = () => {
               />
             </div>
           </div>
-        </>
+        </div>
       )}
-
       <LoadingOverlay isOpen={isLoading} />
-    </div>
+    </>
   );
 };
 
