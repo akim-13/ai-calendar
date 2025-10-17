@@ -98,20 +98,24 @@ const Calendar: React.FC<any> = ({ standaloneEvents, taskEvents, tasks, setIsMod
     ]
 
     return (
-        <>
+        <div className="relative">
             <FullCalendar
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                initialView={typeof window !== 'undefined' && window.innerWidth < 768 ? 'timeGridDay' : 'timeGridWeek'}
+                initialView={'timeGridWeek'}
                 editable={true}
                 selectable={true}
                 height="auto"
                 expandRows={true}
                 contentHeight="auto"
+                slotMinTime="00:00:00"
+                slotMaxTime="24:00:00"
+                slotDuration="01:00:00"
+                slotLabelFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
                 timeZone="local"
                 headerToolbar={typeof window !== 'undefined' && window.innerWidth < 768 ? {
-                    left: 'prev,next',
+                    left: 'prev,next,today',
                     center: 'title',
-                    right: 'today',
+                    right: '',
                 } : {
                     left: 'prev,next,today,title',
                     center: '',
@@ -145,7 +149,7 @@ const Calendar: React.FC<any> = ({ standaloneEvents, taskEvents, tasks, setIsMod
                 open={isSettingsModalOpen}
                 onClose={() => setIsSettingsModalOpen(false)}
              />
-        </>
+        </div>
     );
 };
 

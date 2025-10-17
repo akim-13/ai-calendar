@@ -77,7 +77,8 @@
     margin: 4px;
     padding: 6px 10px;
   }
-  .fc timegrid .fc-timegrid-slot {
+  /* Slightly smaller slot height on mobile to fit more rows */
+  .fc-timegrid-slot {
     @apply h-[48px] !important;
   }
   .fc .fc-scrollgrid, .fc .fc-timegrid-body {
