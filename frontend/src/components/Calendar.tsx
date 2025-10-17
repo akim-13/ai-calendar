@@ -101,15 +101,21 @@ const Calendar: React.FC<any> = ({ standaloneEvents, taskEvents, tasks, setIsMod
         <>
             <FullCalendar
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                initialView="timeGridWeek"
+                initialView={typeof window !== 'undefined' && window.innerWidth < 768 ? 'timeGridDay' : 'timeGridWeek'}
                 editable={true}
                 selectable={true}
-                height="90%"
+                height="auto"
+                expandRows={true}
+                contentHeight="auto"
                 timeZone="local"
-                headerToolbar={{
-                    left: "prev,next,today,title",
-                    center: "",
-                    right: "achievements,settings",
+                headerToolbar={typeof window !== 'undefined' && window.innerWidth < 768 ? {
+                    left: 'prev,next',
+                    center: 'title',
+                    right: 'today',
+                } : {
+                    left: 'prev,next,today,title',
+                    center: '',
+                    right: 'achievements,settings',
                 }}
                 titleFormat={{ month: "short", day: "numeric", year: "numeric" }}
                 customButtons={{

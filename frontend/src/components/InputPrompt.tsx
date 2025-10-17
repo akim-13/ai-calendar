@@ -85,25 +85,25 @@ export default function InputPrompt({ setIsModalOpen, setModalTypeLocked, newFCE
 
   return (
     <div className="flex flex-col w-full">
-      <div className="flex items-center border-2 border-black rounded-3xl px-6 py-3 w-full">
+      <div className="flex items-center border-2 border-black rounded-2xl px-3 py-2 md:rounded-3xl md:px-6 md:py-3 w-full">
         <div className="relative flex-grow">
           <input
             type="text"
-            className="w-full outline-none bg-transparent text-lg px-2 pr-12 py-2"
+            className="w-full outline-none bg-transparent text-base md:text-lg px-2 pr-10 md:pr-12 py-2"
             placeholder="Type your prompt..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
           />
           <button
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 rounded-full hover:bg-gray-200"
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1.5 md:p-2 rounded-full hover:bg-gray-200"
             onClick={handleSubmit}
           >
-            <Check className="w-6 h-6" />
+            <Check className="w-5 h-5 md:w-6 md:h-6" />
           </button>
         </div>
-        <button onClick={handleCreateEventClick} className="ml-2 p-3 rounded-full hover:bg-gray-200">
-          <Plus className="w-6 h-6" />
+        <button onClick={handleCreateEventClick} className="ml-2 p-2 md:p-3 rounded-full hover:bg-gray-200">
+          <Plus className="w-5 h-5 md:w-6 md:h-6" />
         </button>
       </div>
     </div>

@@ -61,3 +61,26 @@
 .fc-createEvent-button.fc-button.fc-button-primary {
   border-radius: 6px !important;
 }
+
+/* Mobile adjustments */
+@media (max-width: 767px) {
+  .fc .fc-toolbar {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .fc .fc-toolbar-chunk {
+    flex: 1 1 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  .fc .fc-button-primary {
+    margin: 4px;
+    padding: 6px 10px;
+  }
+  .fc timegrid .fc-timegrid-slot {
+    @apply h-[48px] !important;
+  }
+  .fc .fc-scrollgrid, .fc .fc-timegrid-body {
+    overflow: visible !important;
+  }
+}

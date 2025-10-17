@@ -5,7 +5,7 @@ import { API_BASE_URL } from "../api";
 interface TaskCardProps {
   taskID: number,
   title: string;
-  priority: 'high' | 'medium' | 'low';
+  priority: number; // backend provides number
   duration: number;
   deadline: string;
   description?: string;
@@ -70,12 +70,12 @@ const TaskCard: React.FC<TaskCardProps> = ({
     setModalTypeLocked(true);
   };
 
-  const priorityColor = priority === 'high' ? 'bg-red-600' :
-                        priority === 'medium' ? 'bg-orange-500' :
+  const priorityColor = priority >= 8 ? 'bg-red-600' :
+                        priority >= 4 ? 'bg-orange-500' :
                         'bg-green-500';
 
   return (
-    <div className="border p-4 rounded-lg max-w-xs bg-gray-100 my-2">
+    <div className="border p-4 rounded-lg w-full md:max-w-xs bg-gray-100 my-2">
       {/* Title & Buttons (Dropdown + Edit) */}
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-2">

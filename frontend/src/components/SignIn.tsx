@@ -15,8 +15,8 @@ const SignIn: React.FC<SignInSignUpProps> = ({ onSignIn }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen"> {/* Grey background for whole page */}
-      <div className="bg-white p-8 rounded-lg shadow-lg w-96"> {/* White background for form container */}
+    <div className="flex items-center justify-center min-h-screen px-4">
+      <div className="bg-white p-6 md:p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
           {isSignUp ? "Sign Up" : "Sign In"}
         </h2>

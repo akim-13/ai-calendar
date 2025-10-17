@@ -41,7 +41,6 @@ const App: React.FC = () => {
   const [modalType, setModalType] = useState('task');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalTypeLocked, setModalTypeLocked] = useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false); // added from input_prompt
   const [isSignedIn, setIsSignedIn] = useState(false); // Authentication state
   const username = "joe"; // TODO
 
@@ -105,7 +104,18 @@ const App: React.FC = () => {
     events: undefined,
   };
 
+  interface FCEvent {
+    id?: string;
+    title: string;
+    start: string;
+    end: string;
+    extendedProps: any;
+  }
+
   const newFCEvent = useRef<FCEvent>({
+    title: "",
+    start: "",
+    end: "",
     extendedProps: { ...initialExtendedProps },
   });
 
@@ -114,14 +124,14 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen w-full justify-center">
+    <div className="flex flex-col md:flex-row md:h-screen w-full">
       {/* Show SignIn component if not signed in */}
       {!isSignedIn ? (
         <SignIn onSignIn={handleSignIn} />
       ) : (
         <>
-          {/* Task Card on the left */}
-          <div className="flex-none w-[300px] p-4 border-r border-gray-300">
+          {/* Task list sidebar (stacks on mobile) */}
+          <div className="flex-none w-full md:w-[300px] p-4 md:border-r border-gray-300 order-2 md:order-1">
             {tasks.length > 0 ? (
               tasks.map((task) => (
                 <TaskCard
@@ -148,8 +158,8 @@ const App: React.FC = () => {
             )}
           </div>
 
-          {/* Main content on the right */}
-          <div className="flex-grow flex flex-col p-6">
+          {/* Main content (calendar + input) */}
+          <div className="flex-grow flex flex-col p-4 md:p-6 order-1 md:order-2">
             {isModalOpen && (
               <TaskEventModal
                 isModalOpen={isModalOpen}

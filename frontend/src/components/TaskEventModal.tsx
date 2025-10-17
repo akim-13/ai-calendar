@@ -177,8 +177,8 @@ const TaskEventModal: React.FC<TaskEventModalProps> = ({
     };
 
     return (
-      <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)} className="fixed inset-0 flex z-[10000] items-center justify-center">
-        <div className="fixed bg-gray-200 p-6 rounded-lg shadow-lg w-[400px] min-h-[505px] flex flex-col">
+      <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)} className="fixed inset-0 flex z-[10000] items-center justify-center px-4">
+        <div className="fixed bg-gray-200 p-4 md:p-6 rounded-lg shadow-lg w-full max-w-md min-h-[505px] flex flex-col">
 
           <DialogTitle className="text-lg font-bold text-black">
             {modalType === "task" ? "Manage Task" : "Manage Event"}
@@ -221,7 +221,7 @@ const TaskEventModal: React.FC<TaskEventModalProps> = ({
             </div>
 
             {/* Buttons */}
-            <div className="flex justify-center space-x-2">
+            <div className="flex flex-wrap justify-center gap-2">
                 <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
