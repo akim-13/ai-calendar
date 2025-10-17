@@ -104,20 +104,9 @@ const App: React.FC = () => {
     events: undefined,
   };
 
-  interface FCEvent {
-    id?: string;
-    title: string;
-    start: string;
-    end: string;
-    extendedProps: any;
-  }
-
-  const newFCEvent = useRef<FCEvent>({
-    title: "",
-    start: "",
-    end: "",
-    extendedProps: { ...initialExtendedProps },
-  });
+	const newFCEvent = useRef<any>({
+		extendedProps: { ...initialExtendedProps },
+	});
 
   const handleSignIn = () => {
     setIsSignedIn(true); // Update authentication state once the user signs in
