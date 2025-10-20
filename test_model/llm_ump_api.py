@@ -244,6 +244,41 @@ class Ump(BaseModel):
     preferred_hours_start: time = time(12, 0)
     preferred_hours_end:   time = time(20, 0)
     
+ 
+    def get_sleep_period_ticks(self, scope_start: datetime, scope_end: datetime) -> List[int]:
+        """
+        Get sleep period ticks for a given scope.
+        This method should be used instead of the computed field property.
+        """
+        return Tick.time_window_to_list_of_ticks(
+            self.sleep_period_start,
+            self.sleep_period_end,
+            scope_start,
+            scope_end
+        )
+        
+    
+    def get_do_not_disturb_ticks(self, scope_start: datetime, scope_end: datetime) -> List[int]:
+        """Get do not disturb period ticks for a given scope."""
+        if self.do_not_disturb_start is None or self.do_not_disturb_end is None:
+            return []
+        return Tick.time_window_to_list_of_ticks(
+            self.do_not_disturb_start,
+            self.do_not_disturb_end,
+            scope_start,
+            scope_end
+        )
+    
+ 
+    def get_preferred_hours_ticks(self, scope_start: datetime, scope_end: datetime) -> List[int]:
+        """Get preferred hours ticks for a given scope."""
+        return Tick.time_window_to_list_of_ticks(
+            self.preferred_hours_start,
+            self.preferred_hours_end,
+            scope_start,
+            scope_end
+        )
+    
     @computed_field
     @property
     def min_session_ticks(self) -> int:
@@ -261,44 +296,6 @@ class Ump(BaseModel):
     def min_break_ticks(self) -> int:
         """Convert min break hours to ticks"""
         return Tick.from_hours(float(self.min_break_between_sessions_hours))
-    
-    @computed_field
-    @property
-    def get_sleep_period_ticks(self, scope_start: datetime, scope_end: datetime) -> List[int]:
-        """
-        Get sleep period ticks for a given scope.
-        This method should be used instead of the computed field property.
-        """
-        return Tick.time_window_to_list_of_ticks(
-            self.sleep_period_start,
-            self.sleep_period_end,
-            scope_start,
-            scope_end
-        )
-        
-    @computed_field
-    @property
-    def get_do_not_disturb_ticks(self, scope_start: datetime, scope_end: datetime) -> List[int]:
-        """Get do not disturb period ticks for a given scope."""
-        if self.do_not_disturb_start is None or self.do_not_disturb_end is None:
-            return []
-        return Tick.time_window_to_list_of_ticks(
-            self.do_not_disturb_start,
-            self.do_not_disturb_end,
-            scope_start,
-            scope_end
-        )
-    
-    @computed_field
-    @property
-    def get_preferred_hours_ticks(self, scope_start: datetime, scope_end: datetime) -> List[int]:
-        """Get preferred hours ticks for a given scope."""
-        return Tick.time_window_to_list_of_ticks(
-            self.preferred_hours_start,
-            self.preferred_hours_end,
-            scope_start,
-            scope_end
-        )
     
 with open("test_model/llm.json", encoding="utf-8") as f:
     llm_raw = json.load(f)
