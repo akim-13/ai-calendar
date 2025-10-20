@@ -72,7 +72,7 @@ class Tick:
         scope_start_rounded = Tick.round_datetime_to_tick_boundary(scope_start, round_up=False)
         scope_end_rounded = Tick.round_datetime_to_tick_boundary(scope_end, round_up=True)
         
-        # Calculate total days in scope
+        # Calculate total days in scope 
         total_days = (scope_end_rounded.date() - scope_start_rounded.date()).days + 1
         
         # Handle overnight periods (when period_end < period_start, e.g., 23:00 to 07:00)
@@ -225,6 +225,19 @@ class UserPromt(BaseModel):
     def scope_duration_ticks(self) -> int:
         """Calculate total ticks in the scope"""
         return int(self.scope_end_tick) - int(self.scope_start_tick)
+    
+    @computed_field
+    @property
+    def get_day_period_ticks(self) -> List[int]:
+        """Get day period ticks for the entire scope"""
+        if self.day_period_start is None or self.day_period_end is None:
+            return []
+        return Tick.time_window_to_list_of_ticks(
+            self.day_period_start,
+            self.day_period_end,
+            self.scope_start_rounded,
+            self.scope_end_rounded
+        )
     
 
 class Ump(BaseModel):
