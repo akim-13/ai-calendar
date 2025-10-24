@@ -1,59 +1,51 @@
-from fastapi import APIRouter, Depends
-
+from fastapi import APIRouter
 from backend.database import DBSession
-from backend.schemas.tasks import TaskCreateForm, TaskUpdateForm
+from backend.schemas.tasks import (
+    TaskCreateRequest,
+    TaskUpdateRequest,
+    TaskResponse,
+)
+from backend.services import tasks
+from backend.services.tasks import TaskNotFoundError
+from fastapi import HTTPException, status
 
-# TODO: Createa an int-backed Enum class instead.
-PRIORITY_LOW = 0
-PRIORITY_MID = 1
-PRIORITY_HIGH = 2
-
-router = APIRouter()
-
-
-@router.post("/")
-def create_task(
-    db: DBSession,
-    form_data: TaskCreateForm = Depends(TaskCreateForm.as_form),
-) -> None:
-    """Create a new task, save it in the database, and schedule events for it."""
-    db = db
-    form_data = form_data
-    raise NotImplementedError
+router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
 
-@router.put("/{taskID}")
-def update_task(
-    db: DBSession,
-    taskID: int,
-    form_data: TaskUpdateForm = Depends(TaskUpdateForm.as_form),
-) -> None:
-    """Update an existing task and reschedule its events."""
-    db = db
-    taskID = taskID
-    form_data = form_data
-    raise NotImplementedError
+@router.post("/create", response_model=TaskResponse)
+def create(db: DBSession, request: TaskCreateRequest) -> TaskResponse:
+    """Create a new task."""
+    task = tasks.create_task(db, request)
+    return TaskResponse.from_orm(task)
 
 
-@router.delete("/{taskID}")
-def delete_task(db: DBSession, taskID: int) -> None:
-    """Delete a task and its events."""
-    db = db
-    taskID = taskID
-    raise NotImplementedError
+@router.put("/update/{taskID}", response_model=TaskResponse)
+def update(db: DBSession, taskID: int, request: TaskUpdateRequest) -> TaskResponse:
+    """Update an existing task."""
+    task = tasks.update_task(db, taskID, request)
+    return TaskResponse.from_orm(task)
 
 
-@router.get("/user/{username}")
-def list_user_tasks(db: DBSession, username: str) -> None:
-    """Return all tasks for a user."""
-    db = db
-    username = username
-    raise NotImplementedError
+@router.delete("/delete/{taskID}", status_code=status.HTTP_204_NO_CONTENT)
+def delete(db: DBSession, taskID: int) -> None:
+    """Delete a task."""
+    try:
+        tasks.delete_task(db, taskID)
+    except TaskNotFoundError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 
-@router.get("/user/{username}/latest")
-def get_latest_user_task(db: DBSession, username: str) -> None:
-    """Return the most recent task for a user."""
-    db = db
-    username = username
-    raise NotImplementedError
+@router.get("/user/{username}", response_model=list[TaskResponse])
+def list_user_tasks(db: DBSession, username: str) -> list[TaskResponse]:
+    """List all tasks for a user."""
+    task_list = tasks.list_user_tasks(db, username)
+    return [TaskResponse.from_orm(t) for t in task_list]
+
+
+@router.get("/user/{username}/latest", response_model=TaskResponse)
+def get_latest_user_task(db: DBSession, username: str) -> TaskResponse:
+    """Get the most recent task for a user."""
+    task = tasks.get_latest_user_task(db, username)
+    return TaskResponse.from_orm(task)
