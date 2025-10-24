@@ -16,7 +16,7 @@ class TaskCreateRequest(BaseModel):
     """
     title: str = Field(..., description="Title of the task")
     description: str = Field(..., description="Detailed description of the task")
-    duration: int = Field(..., description="Duration of the task in hours")
+    duration: int = Field(..., gt=0, description="Duration of the task in hours")
     priority: TaskPriority = Field(..., description="Priority level of the task")
     deadline: datetime = Field(..., description="Deadline for the task")
     username: str = Field(..., description="Username of the task owner")
