@@ -20,6 +20,8 @@ interface AIResponse {
   end?: string;
 }
 
+import { API_BASE_URL } from "../api";
+
 export default function InputPrompt({ setIsModalOpen, setModalTypeLocked, newFCEvent, initialExtendedProps, setModalType }: InputPromptProps) {
   const [input, setInput] = useState("");
   const [response, setResponse] = useState<AIResponse | null>(null);
@@ -30,7 +32,7 @@ export default function InputPrompt({ setIsModalOpen, setModalTypeLocked, newFCE
     try {
       const username = "joe";
       const res = await fetch(
-        `http://localhost:8000/autofill/${username}?description=${encodeURIComponent(
+        `${API_BASE_URL}/autofill/${username}?description=${encodeURIComponent(
           input
         )}`,
         {

@@ -1,22 +1,24 @@
-# fly.toml app configuration file generated for backend-hidden-grass-5191 on 2025-09-24T20:11:49+01:00
+# fly.toml app configuration file generated for ai-calendar-backend on 2025-10-02T13:36:03+01:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'backend-hidden-grass-5191'
-primary_region = 'lhr'
+app = "ai-calendar-backend"
 
 [build]
+  dockerfile = "Dockerfile"
+
+[env]
+  # SQLite stored on a persistent volume mounted at /data
+  DATABASE_URL = "sqlite:////data/database.db"
+
+[[mounts]]
+  source = "db_data"
+  destination = "/data"
 
 [http_service]
   internal_port = 8000
   force_https = true
-  auto_stop_machines = 'stop'
+  auto_stop_machines = true
   auto_start_machines = true
-  min_machines_running = 0
-  processes = ['app']
-
-[[vm]]
-  memory = '1gb'
-  cpu_kind = 'shared'
-  cpus = 1
+  min_machines_running = 1

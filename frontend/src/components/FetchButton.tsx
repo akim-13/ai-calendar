@@ -1,5 +1,6 @@
 import React, { useState} from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../api";
 
 const FetchButton: React.FC = () => {
   const [data, setData] = useState<string | null>(null);
@@ -7,7 +8,7 @@ const FetchButton: React.FC = () => {
   const fetchData = async () => {
     try {
       console.log("Sending request to API...");
-      const response = await axios.get("http://127.0.0.1:8000/");
+      const response = await axios.get(`${API_BASE_URL}/`);
       console.log("API Response:", response);
       setData(response.data.message);
     } catch (error) {
