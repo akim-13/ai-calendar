@@ -9,18 +9,9 @@ from backend.database import Task
 from backend.schemas.tasks import TaskCreateRequest, TaskUpdateRequest
 from backend.schemas.tasks import TaskPriority
 
-
-# ────────────────────────────────────────────────
-# Custom Exceptions
-# ────────────────────────────────────────────────
-
 class TaskNotFoundError(Exception):
     """Raised when a task with the given ID does not exist."""
 
-
-# ────────────────────────────────────────────────
-# CRUD SERVICE FUNCTIONS
-# ────────────────────────────────────────────────
 
 def create_task(db: Session, request: TaskCreateRequest) -> Task:
     """Create a new task for a given user."""
@@ -34,9 +25,7 @@ def create_task(db: Session, request: TaskCreateRequest) -> Task:
     )
 
     db.add(task)
-    db.commit()
     db.refresh(task)
-
     return task
 
 
@@ -52,7 +41,7 @@ def update_task(db: Session, taskID: int, request: TaskUpdateRequest) -> Task:
     task.priority = request.priority
     task.deadline = request.deadline
 
-    db.commit()
+
     db.refresh(task)
 
     return task
@@ -65,7 +54,6 @@ def delete_task(db: Session, taskID: int) -> None:
         raise TaskNotFoundError(f"Task with ID {taskID} not found.")
 
     db.delete(task)
-    db.commit()
 
 
 def list_user_tasks(db: Session, username: str) -> List[Task]:
