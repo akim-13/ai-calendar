@@ -60,7 +60,7 @@ export const useCreateUserShort = HookFactory.createMappedMutationHook(
 )
 
 // Example usage.
-const { mutate, ...rest } = useCreateUser()
+const { mutate, isPending,...rest } = useCreateUser()
 
 async function handleSubmit() {
     try {
