@@ -10,11 +10,11 @@ from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, Integer, String
 # from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.database.models.base import ORMBase, TimestampMixin
-from backend.misc.defaults import DefaultUserSettings
+from backend.core.entities.base import ORMBase, TimestampMixin
+from backend.core.values.defaults import DefaultUserSettings
 
 if TYPE_CHECKING:
-    from backend.database import ExternalCalendar, Plannable, Tag
+    from backend.core.entities import ExternalCalendar, Plannable, Tag
 
 
 class User(ORMBase, TimestampMixin):

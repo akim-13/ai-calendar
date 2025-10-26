@@ -1,5 +1,8 @@
 import { User } from "@/core/entities/user"
 
+
+// NOTE: EXAMPLE ONLY! Re-implement from scratch.
+
 /**
 * Core business-level service for user-related operations.
 * It doesn’t know about React, HTTP, or storage.

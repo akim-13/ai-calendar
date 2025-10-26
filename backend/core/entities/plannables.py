@@ -7,11 +7,11 @@ from typing import TYPE_CHECKING
 from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKey, Integer, Interval, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.database.constants import EVENT_POLYMORPHIC_IDENTITY, TASK_POLYMORPHIC_IDENTITY
-from backend.database.models.base import ORMBase, TimestampMixin
+from backend.core.entities.base import ORMBase, TimestampMixin
+from backend.infra.db.constants import EVENT_POLYMORPHIC_IDENTITY, TASK_POLYMORPHIC_IDENTITY
 
 if TYPE_CHECKING:
-    from backend.database import ExternalCalendar, Recurrence, Tag, User
+    from backend.core.entities import ExternalCalendar, Recurrence, Tag, User
 
 
 class Plannable(ORMBase, TimestampMixin):

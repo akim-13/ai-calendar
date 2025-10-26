@@ -7,12 +7,12 @@ from typing import TYPE_CHECKING
 from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.database.models.base import ORMBase, TimestampMixin
-from backend.misc.recurrence import RecurrenceFrequency
-from backend.tools.time_defaults import get_current_time_in_default_timezone
+from backend.core.entities.base import ORMBase, TimestampMixin
+from backend.core.values.recurrence import RecurrenceFrequency
+from backend.shared.utils.time_defaults import get_current_time_in_default_timezone
 
 if TYPE_CHECKING:
-    from backend.database import Plannable, User
+    from backend.core.entities import Plannable, User
 
 
 class Recurrence(ORMBase, TimestampMixin):

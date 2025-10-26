@@ -3,6 +3,8 @@ import { useValidatedCreateUser } from "@/features/auth/logic/create-user"
 import { Input } from "@/shared/components/Input"
 import { Button } from "@/shared/components/Button"
 
+
+// NOTE: EXAMPLE ONLY! Re-implement from scratch.
 export function CreateUserForm() {
     const { createUser, isPending, isSuccess, error } = useValidatedCreateUser()
     const [username, setUsername] = useState("")

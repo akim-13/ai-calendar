@@ -4,13 +4,16 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.database.db_session import SessionLocal, engine
-from backend.database.models.base import ORMBase
-from backend.misc.logger import configure_logging, get_logger
-from backend.routers import events, tasks, users
-from backend.services.startup import startup
+from backend.app.startup import startup
+from backend.core.entities.base import ORMBase
+from backend.features.plannables.endpoints import events, tasks
+from backend.features.users import endpoints
+from backend.infra.db.session import _engine, _SessionLocal
+from backend.shared.logger import configure_logging, get_logger
 
 # TODO:
+# - Point docker to correct entrypoint (here).
+# - Get rid of `backend.` prefix in imports.
 # - Docstrings enforcement.
 # - Logging
 #   - Add more logging statements
@@ -25,9 +28,9 @@ async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
 
     # TODO: Switch to using Alembic in the future.
     # ORMBase.metadata.drop_all(bind=engine)
-    ORMBase.metadata.create_all(bind=engine)
+    ORMBase.metadata.create_all(bind=_engine)
 
-    with SessionLocal() as db:
+    with _SessionLocal() as db:
         startup(db)
 
     # ↑ STARTUP CODE ↑
@@ -51,7 +54,7 @@ app.add_middleware(
 
 def run_app() -> FastAPI:
     routers = [
-        (users.router, "/users", ["Users"]),
+        (endpoints.router, "/users", ["Users"]),
         (tasks.router, "/tasks", ["Tasks"]),
         (events.router, "/events", ["Events"]),
     ]

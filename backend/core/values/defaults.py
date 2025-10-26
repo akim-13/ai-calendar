@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from backend.misc.user_settings import Theme
+from backend.core.values.user_settings import Theme
 
 
 @dataclass(frozen=True)

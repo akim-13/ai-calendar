@@ -6,10 +6,10 @@ from typing import TYPE_CHECKING
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.database.models.base import ORMBase, TimestampMixin
+from backend.core.entities.base import ORMBase, TimestampMixin
 
 if TYPE_CHECKING:
-    from backend.database import Plannable, User
+    from backend.core.entities import Plannable, User
 
 
 class ExternalCalendar(ORMBase, TimestampMixin):

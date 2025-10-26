@@ -7,6 +7,8 @@ import {
 } from "@/api/internal-utils"
 import { User } from "@/core/entities/user"
 
+// NOTE: EXAMPLE ONLY! Re-implement from scratch.
+
 //TODO: Test query hooks.
 
 // Bidirectional mapper for User create endpoint.

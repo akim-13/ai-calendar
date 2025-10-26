@@ -2,8 +2,8 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 
-from backend.database import Event, Task, User
-from backend.misc.config import DATETIME_FORMAT
+from backend.core.entities import Event, Task, User
+from backend.shared.config import DATETIME_FORMAT
 
 
 def get_events(username: str, interval: tuple[datetime, datetime], db: Session) -> dict:

@@ -1,6 +1,7 @@
 import { UserService } from "@/core/services/user"
 import { useCreateUser } from "@/api/hooks"
 
+// NOTE: EXAMPLE ONLY! Re-implement from scratch.
 export function useValidatedCreateUser() {
   const { mutate, ...rest } = useCreateUser()
 
