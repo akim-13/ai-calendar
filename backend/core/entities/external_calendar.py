@@ -3,13 +3,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from core.entities.base import ORMBase, TimestampMixin
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.core.entities.base import ORMBase, TimestampMixin
-
 if TYPE_CHECKING:
-    from backend.core.entities import Plannable, User
+    from core.entities import Plannable, User
 
 
 class ExternalCalendar(ORMBase, TimestampMixin):
@@ -21,8 +20,8 @@ class ExternalCalendar(ORMBase, TimestampMixin):
         primary_key=True,
         autoincrement=True,
     )
-    user_id: Mapped[str | None] = mapped_column(
-        String(),
+    user_id: Mapped[int] = mapped_column(
+        Integer,
         ForeignKey("user.id", ondelete="CASCADE"),
         nullable=False,
     )

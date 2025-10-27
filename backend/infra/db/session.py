@@ -2,10 +2,9 @@ from collections.abc import Generator
 from typing import Annotated
 
 from fastapi import Depends
+from infra.db.constants import DATABASE_URL
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
-
-from backend.infra.db.constants import DATABASE_URL
 
 # NOTE: Do not import anything from here. Only import DBSession from `__init__.py`.
 

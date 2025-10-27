@@ -1,15 +1,14 @@
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
+from core.entities import ORMBase
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
-from backend.app.startup import startup
-from backend.core.entities.base import ORMBase
-from backend.features.plannables.endpoints import events, tasks
-from backend.features.users import endpoints
-from backend.infra.db.session import _engine, _SessionLocal
-from backend.shared.logger import configure_logging, get_logger
+from features.plannables.endpoints import events, tasks
+from features.users import endpoints
+from infra.db.session import _engine, _SessionLocal
+from root.startup import startup
+from shared.logger import configure_logging, get_logger
 
 # TODO:
 # - Point docker to correct entrypoint (here).

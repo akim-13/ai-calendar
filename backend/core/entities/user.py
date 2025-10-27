@@ -4,17 +4,16 @@ from __future__ import annotations
 from datetime import datetime
 from typing import TYPE_CHECKING
 
+from core.entities.base import ORMBase, TimestampMixin
+from core.values.defaults import DefaultUserSettings
 from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, Integer, String
 
 # TODO: Use JSONB instead of JSON
 # from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.core.entities.base import ORMBase, TimestampMixin
-from backend.core.values.defaults import DefaultUserSettings
-
 if TYPE_CHECKING:
-    from backend.core.entities import ExternalCalendar, Plannable, Tag
+    from core.entities import ExternalCalendar, Plannable, Tag
 
 
 class User(ORMBase, TimestampMixin):
@@ -88,8 +87,8 @@ class UserSettings(ORMBase, TimestampMixin):
     __tablename__ = "user_settings"
 
     # Keys.
-    user_id: Mapped[str] = mapped_column(
-        String(),
+    user_id: Mapped[int] = mapped_column(
+        Integer,
         # `ondelete` makes the DB delete UserSettings row if parent User row is deleted.
         ForeignKey("user.id", ondelete="CASCADE"),
         primary_key=True,
@@ -121,8 +120,8 @@ class UserModelParameters(ORMBase, TimestampMixin):
     __tablename__ = "user_model_parameters"
 
     # Keys.
-    user_id: Mapped[str] = mapped_column(
-        String(),
+    user_id: Mapped[int] = mapped_column(
+        Integer,
         ForeignKey("user.id", ondelete="CASCADE"),
         primary_key=True,
     )

@@ -4,14 +4,13 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING
 
+from core.entities.base import ORMBase, TimestampMixin
+from infra.db.constants import EVENT_POLYMORPHIC_IDENTITY, TASK_POLYMORPHIC_IDENTITY
 from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKey, Integer, Interval, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.core.entities.base import ORMBase, TimestampMixin
-from backend.infra.db.constants import EVENT_POLYMORPHIC_IDENTITY, TASK_POLYMORPHIC_IDENTITY
-
 if TYPE_CHECKING:
-    from backend.core.entities import ExternalCalendar, Recurrence, Tag, User
+    from core.entities import ExternalCalendar, Recurrence, Tag, User
 
 
 class Plannable(ORMBase, TimestampMixin):
@@ -30,8 +29,8 @@ class Plannable(ORMBase, TimestampMixin):
         primary_key=True,
         autoincrement=True,
     )
-    user_id: Mapped[str] = mapped_column(
-        String(),
+    user_id: Mapped[int] = mapped_column(
+        Integer,
         ForeignKey("user.id", ondelete="CASCADE"),
         nullable=False,
     )

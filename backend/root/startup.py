@@ -1,6 +1,5 @@
+from shared.logger import get_logger
 from sqlalchemy.orm import Session
-
-from backend.shared.logger import get_logger
 
 log = get_logger(__name__)
 

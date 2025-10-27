@@ -1,6 +1,5 @@
 from fastapi import APIRouter
-
-from backend.infra.db import DBSession
+from infra.db import DBSession
 
 router = APIRouter()
 

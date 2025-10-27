@@ -1,11 +1,10 @@
 import zoneinfo
 from datetime import datetime
 
+from core.entities import User
+from core.values.defaults import DefaultUserSettings
+from shared.utils.time_defaults import get_valid_or_default_timezone
 from sqlalchemy.orm import Session
-
-from backend.core.entities import User
-from backend.core.values.defaults import DefaultUserSettings
-from backend.shared.utils.time_defaults import get_valid_or_default_timezone
 
 
 def create_user(db: Session, username: str) -> User:

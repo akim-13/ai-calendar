@@ -4,15 +4,14 @@ from __future__ import annotations
 from datetime import datetime
 from typing import TYPE_CHECKING
 
+from core.entities.base import ORMBase, TimestampMixin
+from core.values.recurrence import RecurrenceFrequency
+from shared.utils.time_defaults import get_current_time_in_default_timezone
 from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from backend.core.entities.base import ORMBase, TimestampMixin
-from backend.core.values.recurrence import RecurrenceFrequency
-from backend.shared.utils.time_defaults import get_current_time_in_default_timezone
-
 if TYPE_CHECKING:
-    from backend.core.entities import Plannable, User
+    from core.entities import Plannable, User
 
 
 class Recurrence(ORMBase, TimestampMixin):
@@ -72,8 +71,8 @@ class Tag(ORMBase, TimestampMixin):
         primary_key=True,
         autoincrement=True,
     )
-    user_id: Mapped[str] = mapped_column(
-        String(),
+    user_id: Mapped[int] = mapped_column(
+        Integer,
         ForeignKey("user.id", ondelete="CASCADE"),
         nullable=False,
     )

@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends
-
-from backend.features.plannables.schemas.tasks import TaskCreateForm, TaskUpdateForm
-from backend.infra.db import DBSession
+from features.plannables.schemas.tasks import TaskCreateForm, TaskUpdateForm
+from infra.db import DBSession
 
 # TODO: Createa an int-backed Enum class instead.
 PRIORITY_LOW = 0

@@ -1,8 +1,7 @@
 from typing import Any, Dict
 
+from core.entities import Task
 from sqlalchemy.orm import Session
-
-from backend.core.entities import Task
 
 
 def get_user_tasks(username: str, db: Session) -> None:

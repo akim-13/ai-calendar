@@ -1,7 +1,7 @@
 import logging
 import logging.config
 
-from backend.shared.config import logging_config
+from shared.config import logging_config
 
 # Logging level guidelines:
 #

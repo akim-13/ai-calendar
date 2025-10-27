@@ -1,1 +1,1 @@
-from backend.infra.db.session import DBSession  # noqa: F401
+from infra.db.session import DBSession  # noqa: F401

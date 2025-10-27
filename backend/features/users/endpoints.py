@@ -1,8 +1,7 @@
 from fastapi import APIRouter
-
-from backend.features.users.schemas import CreateUserRequest, UserResponse
-from backend.features.users.services import create_user
-from backend.infra.db import DBSession
+from features.users.schemas import CreateUserRequest, UserResponse
+from features.users.services import create_user
+from infra.db import DBSession
 
 router = APIRouter()
 

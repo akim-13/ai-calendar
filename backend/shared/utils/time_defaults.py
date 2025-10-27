@@ -1,8 +1,8 @@
 import zoneinfo
 from datetime import datetime
 
-from backend.core.values.defaults import DefaultUserSettings
-from backend.shared.logger import get_logger
+from core.values.defaults import DefaultUserSettings
+from shared.logger import get_logger
 
 log = get_logger(__name__)
 
