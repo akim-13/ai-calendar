@@ -16,13 +16,13 @@ services:
   backend:
     build: ./backend
     working_dir: ${HOST_REPO_ABSOLUTE_PATH:-/app}
-    command: uvicorn backend.main:run_app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn root.main:run_app --host 0.0.0.0 --port 8000 --reload
     ports:
       - "8000:8000"
     env_file:
       - .env
     environment:
-      PYTHONPATH: ${HOST_REPO_ABSOLUTE_PATH:-/app}
+      PYTHONPATH: ${HOST_REPO_ABSOLUTE_PATH:-/app}/backend
     volumes:
       - .:${HOST_REPO_ABSOLUTE_PATH:-/app}
     depends_on:

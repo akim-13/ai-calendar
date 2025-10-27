@@ -1,8 +1,5 @@
 import { useState } from "react"
 import { useValidatedCreateUser } from "@/features/auth/logic/create-user"
-import { Input } from "@/shared/components/Input"
-import { Button } from "@/shared/components/Button"
-
 
 // NOTE: EXAMPLE ONLY! Re-implement from scratch.
 export function CreateUserForm() {
@@ -24,14 +21,15 @@ export function CreateUserForm() {
 
     return (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <Input
+            {/* <Input
                 value={username}
                 onChange={e => setUsername(e.target.value)}
                 placeholder="Enter username"
-            />
-            <Button type="submit" disabled={isPending}>
+            /> */}
+
+            {/* <Button type="submit" disabled={isPending}>
                 {isPending ? "Creating..." : "Create User"}
-            </Button>
+            </Button> */}
 
             {validationError && <p className="text-red-600">{validationError}</p>}
             {isSuccess && <p className="text-green-600">User created successfully.</p>}
