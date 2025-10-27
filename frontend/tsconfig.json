@@ -1,7 +1,32 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+  "compilerOptions": {
+    // Project structure
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+
+    // Module system
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "target": "ESNext",
+    "jsx": "react-jsx",
+    "outDir": "dist",
+
+    // Type settings
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+
+    // Optional emit settings
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+
+    // Safety features
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true
+  },
+
+  "include": ["src"]
 }
