@@ -1,4 +1,8 @@
 {
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation":false,
+
     // Pylance
     "python.analysis.extraPaths": ["backend"],
     "python.analysis.autoImportCompletions": true,
@@ -8,7 +12,4 @@
     "python.analysis.typeCheckingMode": "standard",
 
     "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
-    "editor.tabSize": 4,
-    "editor.insertSpaces": true,
-    "editor.detectIndentation": false,
 }
