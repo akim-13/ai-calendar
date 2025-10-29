@@ -1,14 +1,12 @@
 from fastapi import APIRouter, Depends
-from features.plannables.schemas.tasks import TaskCreateForm, TaskUpdateForm
 from infra.db import DBSession
-from backend.database import DBSession
-from backend.schemas.tasks import (
+from backend.features.plannables.schemas.tasks import (
     TaskCreateRequest,
     TaskUpdateRequest,
     TaskResponse,
 )
-from backend.services import tasks
-from backend.services.tasks import TaskNotFoundError
+from backend.features.plannables.services import tasks
+from backend.features.plannables.services.tasks import TaskNotFoundError
 from fastapi import HTTPException, status
 
 router = APIRouter(prefix="/tasks", tags=["Tasks"])

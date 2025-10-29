@@ -4,10 +4,8 @@ from sqlalchemy.orm import Session
 from typing import Any, Dict
 
 from core.entities import Task
-
-from backend.database import Task
-from backend.schemas.tasks import TaskCreateRequest, TaskUpdateRequest
-from backend.schemas.tasks import TaskPriority
+from backend.features.plannables.schemas.tasks import TaskCreateRequest, TaskUpdateRequest
+from backend.features.plannables.schemas.tasks import TaskPriority
 
 class TaskNotFoundError(Exception):
     """Raised when a task with the given ID does not exist."""
