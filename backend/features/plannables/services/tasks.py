@@ -19,7 +19,7 @@ def create_task(db: Session, request: TaskCreateRequest) -> Task:
         duration=request.duration,
         priority=request.priority,
         deadline=request.deadline,
-        username=request.username,
+        user_id=request.user_id,
     )
 
     db.add(task)
@@ -56,14 +56,14 @@ def delete_task(db: Session, taskID: int) -> None:
 
 def list_user_tasks(db: Session, username: str) -> List[Task]:
     """Return all tasks belonging to a specific user."""
-    return db.query(Task).filter(Task.username == username).all()
+    return db.query(Task).filter(Task.user_id == username).all()
 
 
 def get_latest_user_task(db: Session, username: str) -> Task:
     """Return the most recently created or updated task for a user."""
     latest_task = (
         db.query(Task)
-        .filter(Task.username == username)
+        .filter(Task.user_id == username)
         .order_by(desc(Task.id))
         .first()
     )
