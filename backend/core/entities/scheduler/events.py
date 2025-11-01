@@ -1,7 +1,7 @@
 from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 from typing import List, Set
 from datetime import datetime
-from core.entities.scheduler.llm_ump_api import Tick
+from core.entities.scheduler.ump import Tick
 import json
 
 class Event(BaseModel):

@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 
 from core.entities.base import ORMBase, TimestampMixin
-from core.values.recurrence import RecurrenceFrequency
+from core.values.enums import RecurrenceFrequency
 from shared.utils.time_defaults import get_current_time_in_default_timezone
 from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
