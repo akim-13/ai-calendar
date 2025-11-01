@@ -1,0 +1,96 @@
+# This is used as reference only. See visual representation on:
+# https://app.quickdatabasediagrams.com/
+
+user
+-
+username PK string
+last_login datetime NULL
+is_active bool  # For disabling w/o deleting.
+created_at datetime
+updated_at datetime
+# TODO: Auth fields.
+
+
+user_settings
+-
+username string PK FK - user.username
+timezone string
+theme string
+created_at datetime  # Redundant but easier to implement with TimestampMixin
+updated_at datetime
+
+
+# Only for importing .ics files.
+external_calendar
+-
+id PK int
+username string FK >0- user.username
+provider string        # 'mytimetable', 'google', 'outlook'
+created_at datetime
+updated_at datetime
+# TODO: Research actual fields.
+
+
+# SMPs would be stored in a config file.
+user_model_parameters
+-
+username string PK FK - user.username
+parameters jsonb
+created_at datetime
+updated_at datetime
+
+
+plannable
+-
+id int PK
+username string FK >0- user.username
+external_calendar_id int FK >0- external_calendar.id NULL
+type string  # Discriminator column: "task" or "event"
+title string
+description string
+is_completed bool
+created_at datetime
+updated_at datetime
+
+
+task
+-
+id int PK FK - plannable.id
+deadline datetime
+duration interval
+priority int
+
+
+event
+-
+id int PK FK - plannable.id
+task_id int FK >0- task.id NULL
+start datetime
+end datetime
+
+
+recurrence
+-
+id int PK
+plannable_id int FK 0- plannable.id NULL # An event can recur only if it's not part of a task.
+start datetime
+until datetime NULL  # Forever if NULL.
+frequency string     # 'daily', 'weekly', 'monthly', 'annually'.
+interval int         # Repeat every N units.
+count int NULL       # Optional, max number of repetitions.
+created_at datetime
+updated_at datetime
+
+
+tag
+-
+id int PK
+username FK >- user.username
+name string
+
+
+plannable_tag
+-
+(plannable_id,tag_id) PK
+plannable_id int FK >0- plannable.id
+tag_id int FK >0- tag.id

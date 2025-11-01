@@ -1,28 +1,47 @@
 services:
+  frontend:
+    build: ./frontend
+    working_dir: ${HOST_REPO_ABSOLUTE_PATH:-/app}/frontend
+    command: sh -lc '[ "$(ls -A node_modules 2>/dev/null)" ] || npm ci; npm run dev -- --host 0.0.0.0 --port 5173'
+    ports:
+      - "5173:5173"
+    env_file:
+      - .env
+    volumes:
+      - ./frontend:${HOST_REPO_ABSOLUTE_PATH:-/app}/frontend
+      # Create an anonymous volume that's only available to the container and managed by Docker.
+      # On host it is not visible/is empty. This prevents polluting host with os specific binaries.
+      - node_deps:${HOST_REPO_ABSOLUTE_PATH:-/app}/frontend/node_modules
+
   backend:
     build: ./backend
     working_dir: ${HOST_REPO_ABSOLUTE_PATH:-/app}
-    command: uvicorn backend.main:run_app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn root.main:run_app --host 0.0.0.0 --port 8000 --reload
     ports:
       - "8000:8000"
     env_file:
       - .env
     environment:
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
-      PYTHONPATH: ${HOST_REPO_ABSOLUTE_PATH:-/app}
+      PYTHONPATH: ${HOST_REPO_ABSOLUTE_PATH:-/app}/backend
     volumes:
       - .:${HOST_REPO_ABSOLUTE_PATH:-/app}
+    depends_on:
+      postgres:
+        condition: service_healthy
 
-  frontend:
-    build: ./frontend
-    command: sh -lc 'test -d node_modules || npm ci; npm run dev -- --host 0.0.0.0 --port 3000'
+  postgres:
+    image: postgres:15
+    env_file:
+      - .env
     ports:
-      - "3000:3000"
+      - "${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432}"
     volumes:
-      - ./frontend:/app
-      # Create an anonymous volume that's only available to the container and managed by Docker.
-      # On host it is not visible/is empty. This prevents polluting host with os specific binaries.
-      - node_deps:/app/node_modules
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   pre-commit:
     build: .dev-setup
@@ -33,5 +52,6 @@ services:
       - pre-commit-cache:/root/.cache/pre-commit
 
 volumes:
+  postgres_data:
   node_deps:
   pre-commit-cache:

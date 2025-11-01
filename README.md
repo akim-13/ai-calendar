@@ -6,14 +6,7 @@ This project ships with a `docker-compose.yml` that runs both the backend (FastA
 - An OpenAI API key (you can run w/o it, but AI won't work)
 
 ### Environment variables
-Create a `.env` file in the repo root:
-
-```bash
-OPENAI_API_KEY=sk-yourkeyhere
-HOST_REPO_ABSOLUTE_PATH=/absolute/path/to/this/repo
-```
-
-The last variable is optional, `docker compose` will fall back to a default value if unset. However, it is recommended to set it for a better debugging experience.
+You need to create a file named `.env` in the repo root and define a number of environment variables. See `.env.example` to find out which variables have to be set.
 
 ### Pre-commit hooks
 As the name implies, these hooks (scripts) are run automatically before `git commit`. They won't allow you to commit your changes unless all tests pass first. Some of them just fix formatting (e.g., remove trailing whitespaces), while others flag unusud variables, incorrect return types, etc. The same hooks are also run automatically on GitHub.
@@ -80,3 +73,83 @@ docker compose up
 ```bash
 docker compose run --rm frontend npm run gen-types
 ```
+
+
+## Fly.io Deployment and Operations
+
+This project deploys as two Fly.io apps: one for the FastAPI backend and one for the React frontend.
+
+### One-time setup (already done if apps exist)
+- Install CLI and login:
+```bash
+brew install flyctl
+fly auth login
+```
+- Create apps (examples):
+```bash
+# Backend (run inside ./backend)
+fly launch --no-deploy --copy-config --name ai-calendar-backend
+
+# Frontend (run inside ./frontend)
+fly launch --no-deploy --copy-config --name ai-calendar-frontend
+```
+
+### Deploy / Update
+- Backend (from `./backend`):
+```bash
+fly deploy
+```
+- Frontend (from `./frontend`):
+```bash
+fly deploy
+```
+
+### Open the apps
+```bash
+# Opens the default browser
+fly open         # run from the app directory you want to open
+```
+Or visit:
+- Backend: `https://ai-calendar-backend.fly.dev` (FastAPI docs at `/docs`)
+- Frontend: `https://ai-calendar-frontend.fly.dev`
+
+### Logs and health
+```bash
+fly logs           # stream logs
+fly status         # app + machines status
+fly checks list    # health checks
+```
+
+### Regions and scaling
+```bash
+fly platform regions
+fly regions list
+fly regions add lhr   # example: add London
+
+fly scale count 1
+fly scale vm shared-cpu-1x --memory 256
+```
+
+### Configuration notes
+- Backend
+  - `internal_port = 8000` in `backend/fly.toml`
+  - SQLite volume mounted at `/data` and `DATABASE_URL=sqlite:////data/database.db`
+- Frontend
+  - `internal_port = 3000` in `frontend/fly.toml`
+  - Vite dev server bound to `0.0.0.0:3000` (Dockerfile) and `server.allowedHosts` includes the Fly domain in `frontend/vite.config.ts`.
+- Frontend → Backend URL
+  - Change `frontend/src/api.ts`:
+```ts
+export const API_BASE_URL = "https://ai-calendar-backend.fly.dev";
+```
+  - If you adopt envs later, you can switch to `import.meta.env.VITE_API_BASE_URL` with a fallback.
+
+### Common troubleshooting
+- Proxy PR04 (no good candidate):
+  - Ensure the app listens on `0.0.0.0` and the Fly `internal_port` matches.
+  - Verify at least one machine is running in your target region.
+  - Check `fly logs`, `fly checks list`.
+- Vite "host not allowed":
+  - Add your domain to `server.allowedHosts` in `frontend/vite.config.ts`.
+- Frontend cannot reach backend:
+  - Ensure `API_BASE_URL` points to the backend Fly URL and CORS is permissive in the backend (FastAPI CORS is enabled for all origins here).

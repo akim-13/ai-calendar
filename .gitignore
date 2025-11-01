@@ -1,3 +1,4 @@
+.vscode
 *.db
 database.db
 node_modules/
