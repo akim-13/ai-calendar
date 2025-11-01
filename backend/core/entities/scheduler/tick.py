@@ -1,6 +1,7 @@
 from typing import List
 from datetime import datetime, time, timedelta
 
+
 class Tick:
     MINUTES_PER_TICK = 5
     

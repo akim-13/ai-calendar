@@ -1,16 +1,22 @@
- {
-  "min_session_hours": 1,
-  "max_session_hours": 2,
-  "min_break_between_sessions_hours": 0.5,
+{
+    "min_session_hours": 1,
+    "max_session_hours": 2,
+    "min_break_between_sessions_hours": 0.5,
 
-  "sleep_period_start": "23:00",
-  "sleep_period_end": "07:00",
+    "sleep_window": {
+        "start": "23:00",
+        "end": "07:00"
+    },
 
-  "do_not_disturb_start": "09:00",
-  "do_not_disturb_end": "12:00",
+    "do_not_disturb_window": {
+        "start": "09:00",
+        "end": "12:00"
+    },
 
-  "preferred_hours_start": "12:00",
-  "preferred_hours_end": "20:00",
+    "preferred_window": {
+        "start": "12:00",
+        "end": "20:00"
+    },
 
-  "allowed_weekdays": [0, 1, 2, 3, 4]
+    "allowed_weekdays": [0, 1, 2, 3, 4]
 }

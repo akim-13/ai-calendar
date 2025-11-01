@@ -1,8 +1,8 @@
 from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 from typing import List, Set
 from datetime import datetime
-from core.entities.scheduler.ump import Tick
-import json
+from core.entities.scheduler.tick import Tick
+
 
 class Event(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -85,9 +85,3 @@ class EventList(BaseModel):
                 busy_ticks.update(event_ticks)
         
         return sorted(list(busy_ticks))
-
-
-with open("infra/test_data/database.json", encoding="utf-8") as f:
-    database_raw = json.load(f)
-    
-events = EventList(events=database_raw)
