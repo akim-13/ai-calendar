@@ -152,7 +152,7 @@ spread_type = Annotated[str, StringConstraints(pattern=r"^(evenly|asap)$")]
 relation_type = Annotated[str, StringConstraints(pattern=r"^(before|after|around)$")] | None
 
 
-class UserPromt(BaseModel):
+class UserPrompt(BaseModel):
     model_config = ConfigDict(extra="forbid") # Raise error if extra fields are presented by llm
     
     title: str
@@ -310,10 +310,10 @@ class Ump(BaseModel):
         """Convert min break hours to ticks"""
         return Tick.from_hours(float(self.min_break_between_sessions_hours))
     
-with open("test_model/llm.json", encoding="utf-8") as f:
+with open("infra/test_data/llm.json", encoding="utf-8") as f:
     llm_raw = json.load(f)
-llm_data = UserPromt.model_validate(llm_raw)
+llm_data = UserPrompt.model_validate(llm_raw)
 
-with open("test_model/ump.json", encoding="utf-8") as f:
+with open("infra/test_data/ump.json", encoding="utf-8") as f:
     ump_raw = json.load(f)
 ump_data = Ump.model_validate(ump_raw)

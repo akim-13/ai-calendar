@@ -1,7 +1,5 @@
-from llm_ump_api import Tick, Ump, llm_data, ump_data
-from database_api import events
+from core.entities.scheduler import Tick, llm_data, ump_data, events
 from ortools.sat.python import cp_model
-from collections import defaultdict
 
 model = cp_model.CpModel()
 

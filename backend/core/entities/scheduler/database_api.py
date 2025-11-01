@@ -1,7 +1,7 @@
 from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 from typing import List, Set
 from datetime import datetime
-from llm_ump_api  import Tick
+from core.entities.scheduler.llm_ump_api import Tick
 import json
 
 class Event(BaseModel):
@@ -87,7 +87,7 @@ class EventList(BaseModel):
         return sorted(list(busy_ticks))
 
 
-with open("test_model/database.json", encoding="utf-8") as f:
+with open("infra/test_data/database.json", encoding="utf-8") as f:
     database_raw = json.load(f)
     
 events = EventList(events=database_raw)
