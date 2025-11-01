@@ -1,0 +1,20 @@
+{
+    "title": "math coursework",
+    "tag": "coursework",
+    "priority": 1,
+    "task_length_hours": 10,
+    "max_allowed_hours_per_day": 2,
+    "spread": "uniform",
+
+    "day_period": null,
+    "relation_to_day_period": null,
+
+    "scope": {
+    "start": "2024-11-01T00:00:00",
+    "end": "2024-11-30T23:59:59"
+    },
+
+    "another_task_mentioned": null,
+    "number_of_another_task_mentioned": null,
+    "relation_to_another_task_mentioned": null
+}

@@ -186,3 +186,6 @@ cache/
 # Misc
 *.db
 .DS_Store
+
+# Some demo files
+**/test_model/demo/
